@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equity Lending Calculator — Corbwood</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#25263D;--bteal:#32B0C6;--dteal:#2A5B62;--mteal:#4C9A9F;
+  --bg:#F4F6F8;--border:#E2E8ED;--grey:#5D5D5D;--muted:#8A9BAE;
+  --pos:#5DDBA0;--neg:#FF7B7B;--acc:#B8D4FF;
+}
+body{background:var(--bg);font-family:'Lato',sans-serif;min-height:100vh;color:var(--navy);}
+
+/* ── Header ── */
+header{background:var(--navy);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:20px 40px;text-align:center;}
+.header-logo{color:#fff;font-size:22px;font-weight:900;letter-spacing:2px;}
+.header-sub{color:var(--mteal);font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;}
+
+/* ── Layout ── */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px 28px 56px;max-width:960px;margin:0 auto;}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:16px;border:1px solid var(--border);overflow:hidden;}
+.card-hd{display:flex;align-items:center;gap:10px;padding:16px 20px 12px;border-bottom:1px solid var(--border);}
+.card-icon{font-size:18px;}
+.card-hd h3{font-size:14px;font-weight:900;color:var(--navy);}
+.card-body{padding:16px 20px;}
+
+/* ── Form elements ── */
+.field{margin-bottom:14px;}
+.field:last-child{margin-bottom:0;}
+label{display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;background:#FAFBFC;overflow:hidden;transition:border-color .15s;}
+.input-wrap:focus-within{border-color:var(--bteal);}
+.pfx,.sfx{padding:0 10px;font-size:13px;font-weight:700;color:var(--muted);background:#F0F2F4;align-self:stretch;display:flex;align-items:center;flex-shrink:0;}
+.sfx{border-left:1.5px solid var(--border);}
+.pfx{border-right:1.5px solid var(--border);}
+input.field-input{flex:1;padding:10px 12px;font-family:'Lato',sans-serif;font-size:15px;font-weight:700;color:var(--navy);border:none;background:transparent;outline:none;}
+input.field-input::placeholder{color:#CBD5E1;font-weight:400;}
+.field-note{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+/* ── Toggle ── */
+.toggle-row{display:flex;gap:8px;margin-bottom:14px;}
+.toggle-btn{flex:1;padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:#FAFBFC;font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;}
+.toggle-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── Cornerstone badge ── */
+.cornerstone-row{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(37,38,61,.06),rgba(50,176,198,.08));border:1.5px solid rgba(50,176,198,.25);border-radius:11px;padding:12px 14px;margin-bottom:14px;cursor:pointer;}
+.cs-label{font-size:12px;font-weight:700;color:var(--navy);}
+.cs-sub{font-size:10px;color:var(--mteal);margin-top:2px;}
+.cs-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+.cs-switch input{opacity:0;width:0;height:0;}
+.cs-slider{position:absolute;inset:0;background:#CBD5E1;border-radius:22px;transition:.2s;}
+.cs-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+.cs-switch input:checked + .cs-slider{background:var(--bteal);}
+.cs-switch input:checked + .cs-slider::before{transform:translateX(18px);}
+
+/* ── Section label ── */
+.section-lbl{font-size:10px;font-weight:700;color:var(--mteal);letter-spacing:1.5px;text-transform:uppercase;margin:16px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+
+/* ── Results panel ── */
+.results-panel{background:var(--navy);border-radius:16px;overflow:hidden;}
+.res-hero{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.res-hero-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.res-big{font-size:32px;font-weight:900;color:var(--bteal);letter-spacing:-0.5px;}
+.res-big-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px;}
+
+.res-section{padding:14px 22px;}
+.res-section + .res-section{border-top:1px solid rgba(255,255,255,.07);}
+.res-section-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px;}
+
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
+.res-lbl{font-size:12px;color:rgba(255,255,255,.55);}
+.res-val{font-size:13px;font-weight:700;color:#fff;}
+.res-val.pos{color:var(--pos);}
+.res-val.neg{color:var(--neg);}
+.res-val.hi{color:var(--bteal);}
+.res-val.dim{color:rgba(255,255,255,.35);}
+
+.res-divider{height:1px;background:rgba(255,255,255,.07);margin:2px 0;}
+
+.spread-box{margin:14px 22px;background:linear-gradient(135deg,var(--dteal),var(--bteal));border-radius:12px;padding:16px 18px;}
+.spread-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:6px;}
+.spread-val{font-size:28px;font-weight:900;color:#fff;letter-spacing:-0.5px;}
+.spread-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px;}
+
+.spread-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 22px 16px;}
+.spread-item{background:rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;}
+.spread-item-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.spread-item-val{font-size:16px;font-weight:900;color:var(--pos);}
+
+.mode-note{margin:0 22px 16px;font-size:10px;color:rgba(255,255,255,.3);line-height:1.5;font-style:italic;}
+
+/* ── LVR indicator ── */
+.lvr-bar-wrap{margin:10px 0 14px;}
+.lvr-bar-bg{height:8px;background:#E2E8ED;border-radius:4px;overflow:hidden;position:relative;}
+.lvr-bar-fill{height:100%;border-radius:4px;transition:width .3s,background .3s;}
+.lvr-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-weight:700;margin-top:4px;}
+
+/* ── Callout ── */
+.callout{background:rgba(50,176,198,.08);border:1.5px solid rgba(50,176,198,.25);border-radius:10px;padding:11px 14px;margin-bottom:14px;}
+.callout-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;}
+.callout-val{font-size:17px;font-weight:900;color:var(--navy);}
+
+footer{background:var(--navy);text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.4px;}
+
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.pop{animation:pop .25s ease;}
+
+@media(max-width:720px){
+  .main{grid-template-columns:1fr;padding:14px 14px 48px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">CORBWOOD</div>
+  <div class="header-sub">Equity Investing Calculator</div>
+</header>
+
+<div class="main">
+
+  <!-- ── INPUTS ── -->
+  <div>
+
+    <div class="card">
+      <div class="card-hd"><div class="card-icon">🏠</div><h3>Your Property</h3></div>
+      <div class="card-body">
+        <div class="field">
+          <label>Current Market Value</label>
+          <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="current_value" class="field-input currency-input" placeholder="750,000" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>Remaining Mortgage</label>
+          <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="remaining_mortgage" class="field-input currency-input" placeholder="300,000" oninput="calc()"></div>
+        </div>
+
+        <div class="section-lbl">Equity Position</div>
+
+        <div class="callout">
+          <div class="callout-lbl">Current LVR</div>
+          <div class="callout-val" id="d-lvr">—</div>
+          <div class="lvr-bar-wrap">
+            <div class="lvr-bar-bg"><div class="lvr-bar-fill" id="lvr-fill" style="width:0%;background:var(--bteal)"></div></div>
+            <div class="lvr-labels"><span>0%</span><span>80%</span><span>100%</span></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="callout" style="margin-bottom:0">
+            <div class="callout-lbl">Max loan at 80%</div>
+            <div class="callout-val" id="d-maxloan">—</div>
+          </div>
+          <div class="callout" style="margin-bottom:0;border-color:rgba(93,219,160,.35);background:rgba(93,219,160,.07)">
+            <div class="callout-lbl">Released equity</div>
+            <div class="callout-val" id="d-equity" style="color:var(--dteal)">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-hd"><div class="card-icon">📈</div><h3>Return Rates</h3></div>
+      <div class="card-body">
+        <div class="field">
+          <label>Investment Return Rate</label>
+          <div class="input-wrap"><input type="number" id="invest_rate" class="field-input" value="9.25" min="0" max="20" step="0.25" oninput="calc()"><span class="sfx">%</span></div>
+        </div>
+        <div class="field">
+          <label>Borrowing Rate</label>
+          <div class="input-wrap"><input type="number" id="borrow_rate" class="field-input" value="6.25" min="0" max="20" step="0.25" oninput="calc()"><span class="sfx">%</span></div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div class="results-panel">
+
+    <div class="res-hero">
+      <div class="res-hero-lbl">Annual Net Return</div>
+      <div class="res-big" id="r-net-week">—</div>
+      <div class="res-big-sub" id="r-mode-note">per year after outgoings on released equity</div>
+    </div>
+
+    <div class="res-section">
+            <div class="res-row">
+        <span class="res-lbl">New total loan</span>
+        <span class="res-val" id="r-newloan">—</span>
+      </div>
+      <div class="res-row">
+        <span class="res-lbl">Released equity</span>
+        <span class="res-val hi" id="r-equity">—</span>
+      </div>
+      <div class="res-divider" style="margin:6px 0"></div>
+      <div class="res-row">
+        <span class="res-lbl" id="r-cost-lbl">Additional weekly outgoing</span>
+        <span class="res-val neg" id="r-cost-week">—</span>
+      </div>
+      <div class="res-row">
+        <span class="res-lbl">Annual outgoing</span>
+        <span class="res-val neg" id="r-cost-year">—</span>
+      </div>
+    </div>
+
+    <div class="res-section">
+      <div class="res-section-lbl" id="r-lend-lbl">Investing @ 9.25%</div>
+      <div class="res-row">
+        <span class="res-lbl">Amount invested</span>
+        <span class="res-val" id="r-lent">—</span>
+      </div>
+      <div class="res-row">
+        <span class="res-lbl">Interest rate</span>
+        <span class="res-val" id="r-lend-rate">9.25%</span>
+      </div>
+      <div class="res-divider" style="margin:6px 0"></div>
+      <div class="res-row">
+        <span class="res-lbl">Weekly return</span>
+        <span class="res-val pos" id="r-earn-week">—</span>
+      </div>
+      <div class="res-row">
+        <span class="res-lbl">Annual return</span>
+        <span class="res-val pos" id="r-earn-year">—</span>
+      </div>
+    </div>
+
+    <div class="spread-box">
+      <div class="spread-lbl" id="r-spread-lbl">The Spread — 3.00%</div>
+      <div class="spread-val" id="r-net-week2">—</div>
+      <div class="spread-sub">per year after outgoings</div>
+    </div>
+
+    <div class="spread-grid">
+      <div class="spread-item">
+        <div class="spread-item-lbl">Monthly net</div>
+        <div class="spread-item-val" id="r-net-month">—</div>
+      </div>
+      <div class="spread-item">
+        <div class="spread-item-lbl">Weekly net</div>
+        <div class="spread-item-val" id="r-net-year">—</div>
+      </div>
+    </div>
+
+    
+
+  </div>
+</div>
+
+<footer>© 2026 Corbwood & Associates Pty Ltd — ABN 96 617 441 700 — Licence #4295736</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const v = id => parseFloat(($( id)?.value || '').replace(/,/g,'')) || 0;
+
+const fmtCommas = n => (!n && n!==0) ? '' : Math.abs(Math.round(n)).toLocaleString('en-AU');
+const fmt  = n => '$' + Math.abs(Math.round(n)).toLocaleString('en-AU');
+const fmtD = n => '$' + Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtP = n => n.toFixed(2) + '%';
+const fmtPn = n => n.toFixed(0) + '%';
+
+function PMT(rate, nper, pv) {
+  if (rate === 0) return pv / nper;
+  return (pv * rate) / (1 - Math.pow(1 + rate, -nper));
+}
+
+function pop(id) {
+  const el = $(id); if(!el) return;
+  el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+}
+
+function setVal(id, text) {
+  const el = $(id); if(!el) return;
+  el.textContent = text; pop(id);
+}
+
+function calc() {
+  const current    = v('current_value');
+  const remaining  = v('remaining_mortgage');
+
+  const borrowRate = (v('borrow_rate') || 6.25) / 100;
+  const lendRate   = (v('invest_rate') || 9.25) / 100;
+  const spreadRate = lendRate - borrowRate;
+
+  // ── Equity position ──────────────────────────────────────────────────────
+  const currentLVR  = current > 0 ? (remaining / current) * 100 : 0;
+  const maxLoan80   = current * 0.80;
+  const released    = Math.max(0, maxLoan80 - remaining);
+
+  // LVR display
+  setVal('d-lvr', current > 0 ? fmtPn(currentLVR) : '—');
+  setVal('d-maxloan', current > 0 ? fmt(maxLoan80) : '—');
+  setVal('d-equity', released > 0 ? fmt(released) : current > 0 ? '$0' : '—');
+
+  // LVR bar colour
+  const fill = $('lvr-fill');
+  const pct  = Math.min(100, currentLVR);
+  fill.style.width  = pct + '%';
+  fill.style.background = currentLVR > 90 ? 'var(--neg)' : currentLVR > 80 ? '#F5A623' : 'var(--bteal)';
+
+  // ── Weekly cost (interest-only on released equity) ──────────────────────
+  const weeklyCost = released * borrowRate / 52;
+  const costLbl = 'Additional weekly outgoing';
+
+  // ── Lending return ───────────────────────────────────────────────────────
+  const weeklyReturn = released * lendRate / 52;
+  const weeklyNet    = weeklyReturn - weeklyCost;
+
+  // ── Update results ───────────────────────────────────────────────────────
+  const fmt2 = n => (n >= 0 ? '+' : '−') + '$' + Math.abs(Math.round(n)).toLocaleString('en-AU');
+  const col   = weeklyNet >= 0 ? 'var(--bteal)' : 'var(--neg)';
+
+  const netWeekText = released > 0 ? fmtD(Math.abs(weeklyNet)) : '—';
+  const prefix      = weeklyNet >= 0 ? '+$' : '−$';
+  const netDispFull = released > 0 ? prefix + Math.abs(weeklyNet).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+
+  // Hero shows ANNUAL net
+  const annualNet = weeklyNet * 52;
+  const annualPrefix = annualNet >= 0 ? '+$' : '−$';
+  const annualDisp = released > 0 ? annualPrefix + Math.abs(annualNet).toLocaleString('en-AU',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—';
+  $('r-net-week').textContent  = annualDisp;
+  $('r-net-week').style.color  = col;
+  $('r-net-week2').textContent = annualDisp;
+  pop('r-net-week'); pop('r-net-week2');
+
+  setVal('r-newloan',     maxLoan80 > 0 ? fmt(maxLoan80) : '—');
+  setVal('r-equity',      released > 0  ? fmt(released)  : '—');
+  setVal('r-cost-week',   released > 0  ? '−' + fmtD(weeklyCost)  : '—');
+  setVal('r-cost-year',   released > 0  ? '−' + fmt(weeklyCost*52) : '—');
+  setVal('r-lent',        released > 0  ? fmt(released)  : '—');
+  setVal('r-earn-week',   released > 0  ? '+' + fmtD(weeklyReturn)  : '—');
+  setVal('r-earn-year',   released > 0  ? '+' + fmt(weeklyReturn*52) : '—');
+  setVal('r-net-month',   released > 0  ? (weeklyNet >= 0 ? '+' : '−') + '$' + Math.abs(weeklyNet * 52/12).toLocaleString('en-AU',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—');
+  setVal('r-net-year',    released > 0  ? netDispFull : '—');  // weekly net now in grid
+
+  $('r-cost-lbl').textContent   = costLbl;
+  $('r-lend-lbl').textContent   = `Investing @ ${(lendRate*100).toFixed(2)}%`;
+  $('r-lend-rate').textContent  = (lendRate*100).toFixed(2) + '%';
+  $('r-spread-lbl').textContent = `The Spread — ${(spreadRate*100).toFixed(2)}%`;
+  $('r-mode-note').textContent  = 'per year after outgoing on released equity';
+
+  // Net colour on spread grid
+  const nv = $('r-net-month');
+  const ny = $('r-net-year');
+  const nw2 = $('r-net-week2');
+  if(nv) nv.style.color = weeklyNet >= 0 ? 'var(--pos)' : 'var(--neg)';
+  if(ny) ny.style.color = weeklyNet >= 0 ? 'var(--pos)' : 'var(--neg)';
+}
+
+// Currency formatter
+document.querySelectorAll('.currency-input').forEach(el => {
+  el.addEventListener('focus', function() { this.value = this.value.replace(/,/g,''); });
+  el.addEventListener('blur', function() {
+    const n = parseFloat(this.value.replace(/,/g,''));
+    if (!isNaN(n)) this.value = fmtCommas(n);
+    calc();
+  });
+});
+
+calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Corbwood Co-Invest Cashflow Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--navy:#25263D;--navy2:#2e2f4d;--dteal:#2A5B62;--mteal:#4C9A9F;--lteal:#40B8BC;--bteal:#32B0C6;--grey:#5D5D5D;--bg:#F4F6F8;--white:#fff;--border:#E2E8ED;--text:#1A1A2E;--muted:#8A9BAE;}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+header{background:var(--navy);padding:18px 40px;text-align:center;}
+header h1{font-size:22px;font-weight:900;color:#fff;letter-spacing:2px;}
+header p{color:var(--mteal);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
+.main{max-width:1200px;margin:0 auto;padding:24px 20px 60px;display:grid;grid-template-columns:1fr 390px;gap:22px;align-items:start;}
+.card{background:var(--white);border-radius:14px;border:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,.05);margin-bottom:18px;}
+.card:last-child{margin-bottom:0;}
+.card-hd{padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--bteal),var(--dteal));display:flex;align-items:center;justify-content:center;font-size:14px;}
+.card-hd h3{font-size:11px;font-weight:700;color:var(--navy);letter-spacing:.5px;text-transform:uppercase;}
+.card-body{padding:18px 20px;}
+.field{margin-bottom:16px;}
+.field:last-child{margin-bottom:0;}
+label{display:block;font-size:11px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.input-wrap{position:relative;}
+.pfx{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:var(--mteal);pointer-events:none;}
+input[type=number],input[type=text],input[type=email],select{width:100%;padding:10px 12px 10px 28px;border:1.5px solid var(--border);border-radius:9px;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;color:var(--text);background:#FAFBFC;outline:none;transition:border-color .2s;-moz-appearance:textfield;}
+input.no-pfx,select{padding-left:12px;}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input:focus,select:focus{border-color:var(--bteal);box-shadow:0 0 0 3px rgba(50,176,198,.1);background:#fff;}
+.field-note{font-size:11px;color:var(--muted);margin-top:4px;}
+.prop-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.prop-tab{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);font-family:'Lato',sans-serif;font-size:12px;font-weight:700;cursor:pointer;color:var(--grey);background:var(--bg);transition:all .2s;}
+.prop-tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.prop-panel{display:none;}
+.prop-panel.active{display:block;}
+.prop-count-row{display:flex;gap:8px;margin-bottom:16px;}
+.prop-count-btn{flex:1;padding:9px;border:1.5px solid var(--border);border-radius:9px;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:var(--grey);background:var(--bg);transition:all .2s;text-align:center;}
+.prop-count-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.section-lbl{font-size:10px;font-weight:700;color:var(--mteal);letter-spacing:1.5px;text-transform:uppercase;margin:16px 0 10px;padding-top:14px;border-top:1px solid var(--border);}
+.computed-wrap{margin-top:8px;padding-top:12px;border-top:1px solid var(--border);}
+.computed-lbl{font-size:9px;font-weight:700;color:var(--mteal);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.computed{background:linear-gradient(135deg,#EEF9FA,#E8F5F6);border:1.5px solid rgba(50,176,198,.2);border-radius:9px;padding:10px 12px;font-size:14px;font-weight:700;color:var(--dteal);}
+/* Results panel */
+.results-panel{position:sticky;top:20px;}
+.res-card{background:var(--navy);border-radius:14px;overflow:hidden;box-shadow:0 4px 28px rgba(37,38,61,.25);}
+/* Per-property tabs in results panel */
+.res-prop-tabs{display:flex;gap:5px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.res-prop-tab{flex:1;padding:6px;border-radius:7px;border:1.5px solid rgba(255,255,255,.15);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;cursor:pointer;color:rgba(255,255,255,.4);background:transparent;transition:all .2s;}
+.res-prop-tab.active{background:var(--bteal);border-color:var(--bteal);color:#fff;}
+.res-hero{background:linear-gradient(135deg,var(--dteal),var(--navy2));padding:18px 20px;text-align:center;}
+.res-hero-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mteal);margin-bottom:5px;}
+.yield-big{font-size:46px;font-weight:900;color:var(--bteal);line-height:1;letter-spacing:-2px;}
+.yield-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;}
+.res-section-lbl{padding:9px 20px 3px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.06);}
+.res-row:last-child{border-bottom:none;}
+.res-lbl{font-size:12px;color:rgba(255,255,255,.5);}
+.res-val{font-size:13px;font-weight:700;color:#fff;}
+.res-val.pos{color:#5DDBA0;}.res-val.neg{color:#FF7B7B;}.res-val.acc{color:var(--bteal);}
+.res-divider{height:1px;background:rgba(255,255,255,.08);margin:2px 0;}
+.res-total{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(50,176,198,.1);border-top:1px solid rgba(50,176,198,.2);}
+.res-total-lbl{font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.4px;}
+.res-total-val{font-size:18px;font-weight:900;color:var(--bteal);}
+.ret-card{background:var(--white);border:1px solid var(--border);border-radius:14px;margin-top:12px;overflow:hidden;}
+.ret-hd{padding:12px 20px 8px;border-bottom:1px solid var(--border);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);}
+.ret-row{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 20px;border-bottom:1px solid var(--border);}
+.ret-row:last-child{border-bottom:none;}
+.ret-lbl{font-size:11px;color:var(--grey);max-width:160px;line-height:1.4;}
+.ret-val{font-size:17px;font-weight:900;color:var(--dteal);}
+.ret-sub{font-size:10px;color:var(--muted);text-align:right;}
+.email-card{background:#1e1f35;border-radius:14px;padding:16px 20px;margin-top:12px;}
+.email-label{color:rgba(255,255,255,.5);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.email-input{width:100%;padding:10px 12px;border-radius:9px;border:1.5px solid rgba(255,255,255,.12);font-family:'Lato',sans-serif;font-size:13px;background:rgba(255,255,255,.07);color:#fff;outline:none;margin-bottom:8px;}
+.email-input::placeholder{color:rgba(255,255,255,.75);}
+.email-input:focus{border-color:var(--bteal);}
+.btn-row{display:flex;gap:8px;}
+.btn-pdf{flex:1;padding:10px;background:transparent;border:1.5px solid rgba(50,176,198,.5);border-radius:9px;color:var(--bteal);font-family:'Lato',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-pdf:hover{background:rgba(50,176,198,.12);}
+.btn-send{flex:1;padding:10px;background:var(--bteal);border:none;border-radius:9px;color:#fff;font-family:'Lato',sans-serif;font-weight:700;font-size:12px;cursor:pointer;}
+.send-status{font-size:11px;color:var(--mteal);margin-top:6px;min-height:16px;}
+.tip-i{position:relative;display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;border:1.5px solid currentColor;font-size:8px;font-weight:900;cursor:help;margin-left:4px;vertical-align:middle;opacity:1;line-height:1;font-style:normal;}
+.tip-i .tt{display:none;position:absolute;bottom:calc(100% + 8px);left:0;background:#25263D;color:rgba(255,255,255,.9);font-size:11px;font-weight:400;line-height:1.5;border-radius:9px;padding:9px 12px;width:200px;z-index:300;box-shadow:0 6px 24px rgba(0,0,0,.45);text-align:left;font-style:normal;text-transform:none;letter-spacing:0;}
+.tip-i:hover .tt{display:block;}
+footer{background:var(--navy);text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,.25);letter-spacing:.4px;}
+@media(max-width:820px){.main{grid-template-columns:1fr;padding:14px 14px 48px;}.results-panel{position:static;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>CORBWOOD</h1>
+  <p>Co-Invest Cashflow Calculator</p>
+</header>
+
+<div class="main">
+<div class="inputs-col">
+
+  <!-- CLIENT DETAILS -->
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">👤</div><h3>Your Details</h3></div>
+    <div class="card-body">
+      <div class="field">
+        <label>Client Name</label>
+        <div class="input-wrap"><input type="text" id="clientName" class="no-pfx" placeholder="e.g. Sarah Mitchell" oninput="syncName()"></div>
+      </div>
+      <div class="field">
+        <label>Number of Properties</label>
+        <div class="prop-count-row">
+          <button class="prop-count-btn active" onclick="setPropCount(1)">1</button>
+          <button class="prop-count-btn" onclick="setPropCount(2)">2</button>
+          <button class="prop-count-btn" onclick="setPropCount(3)">3</button>
+          <button class="prop-count-btn" onclick="setPropCount(4)">4</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Gross Annual Income (Combined)</label>
+        <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="income" value="120,000" class="currency-input"></div>
+      </div>
+      <div class="field">
+        <label>Salary Sacrifice <span style="font-weight:400;text-transform:none;font-size:10px">(per week — enter 0 if not applicable)</span></label>
+        <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="salary_sacrifice" value="0" class="currency-input"></div>
+      </div>
+      <div class="field">
+        <label>Age of Youngest Person in Couple</label>
+        <div class="input-wrap"><input type="number" id="age" value="40" min="18" max="80" class="no-pfx" oninput="calc()"></div>
+      </div>
+      <div class="field">
+        <label>Expected Retirement Age</label>
+        <div class="input-wrap"><input type="number" id="ret_age" value="67" min="50" max="85" class="no-pfx" oninput="calc()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPERTY DETAILS -->
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🏠</div><h3>Property Details</h3></div>
+    <div class="card-body">
+      <div class="prop-tabs" id="propTabs"></div>
+      <div id="propPanels"></div>
+
+    </div>
+  </div>
+
+  <!-- OUTGOINGS CARD -->
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">💸</div><h3>Outgoings</h3></div>
+    <div class="card-body">
+      <div class="field">
+        <label>Accounting, Admin &amp; Auditing <span style="font-weight:400;text-transform:none;font-size:10px">(annual, for SMSF)</span></label>
+        <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="accounting" value="3,000" class="currency-input"></div>
+        <div class="field-note">Applied once per year across your SMSF.</div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Switch property tabs above to update these figures.</p>
+        <div id="outPanels"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETIREMENT PROJECTION -->
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">📈</div><h3>Retirement Projection</h3></div>
+    <div class="card-body">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Switch property tabs above to update figures.</p>
+      <div id="retPanels"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- RESULTS PANEL -->
+<div class="results-panel">
+  <div class="res-card">
+    <!-- Per-property cashflow tabs -->
+    <div class="res-prop-tabs">
+      <button class="res-prop-tab active" id="rtab-all" onclick="selectView('all')">All</button>
+      <button class="res-prop-tab" id="rtab-1" onclick="selectView(1)">1</button>
+      <button class="res-prop-tab" style="display:none" id="rtab-2" onclick="selectView(2)">2</button>
+      <button class="res-prop-tab" style="display:none" id="rtab-3" onclick="selectView(3)">3</button>
+      <button class="res-prop-tab" style="display:none" id="rtab-4" onclick="selectView(4)">4</button>
+    </div>
+    <div class="res-hero">
+      <div class="res-hero-lbl">Annual Cashflow</div>
+      <div class="yield-big" id="r-cashflow">$0</div>
+      <div class="yield-sub" id="r-yield">0.00% gross rental yield</div>
+    </div>
+    <div class="res-section-lbl">Incomings</div>
+    <div class="res-row"><span class="res-lbl">Annual Rental Income</span><span class="res-val pos" id="r-rent">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Employer Contributions (12%)</span><span class="res-val pos" id="r-ec">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Salary Sacrifice</span><span class="res-val pos" id="r-ss">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Tax Depreciation</span><span class="res-val pos" id="r-dep">$0</span></div>
+    <div class="res-row" style="background:rgba(93,219,160,.05)"><span class="res-lbl" style="font-weight:700;color:rgba(255,255,255,.7)">Total Incomings</span><span class="res-val pos" id="r-in">$0</span></div>
+    <div class="res-divider"></div>
+    <div class="res-section-lbl">Outgoings</div>
+    <div class="res-row"><span class="res-lbl">Loan Interest</span><span class="res-val neg" id="r-interest">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Rental &amp; PM Fees</span><span class="res-val neg" id="r-pm">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Council &amp; Water Rates</span><span class="res-val neg" id="r-rates">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Building Insurance / Body Corporate</span><span class="res-val neg" id="r-ins">$0</span></div>
+    <div class="res-row"><span class="res-lbl">Accounting &amp; Admin</span><span class="res-val neg" id="r-acc">$0</span></div>
+    <div class="res-row" style="background:rgba(255,123,123,.05)"><span class="res-lbl" style="font-weight:700;color:rgba(255,255,255,.7)">Total Outgoings</span><span class="res-val neg" id="r-out">$0</span></div>
+    <div class="res-divider"></div>
+    <div class="res-total">
+      <span class="res-total-lbl">Est. Years Until Debt Free <span class="tip-i">i<span class="tt">Estimate only. Assumes rent and employer contributions continue to service the loan over time.</span></span></span>
+      <span class="res-total-val" id="r-debtfree">—</span>
+    </div>
+    <div class="res-row" style="border-top:none"><span class="res-lbl">1-Year Holding Costs (your share)</span><span class="res-val acc" id="r-buffer">$0</span></div>
+  </div>
+
+  <div class="ret-card">
+    <div class="ret-hd">Potential Retirement Portfolio</div>
+    <div class="ret-row">
+      <div class="ret-lbl">Your portion of the properties will be worth <span class="tip-i">i<span class="tt">Based on 4% p.a. compounded growth.</span></span></div>
+      <div style="text-align:right"><div class="ret-val" id="r-propval">$0</div></div>
+    </div>
+    <div class="ret-row">
+      <div class="ret-lbl">Cash Balance at Retirement <span class="tip-i">i<span class="tt">After debt is cleared and rent + employer contributions accumulate — no growth applied.</span></span></div>
+      <div style="text-align:right"><div class="ret-val" id="r-cash">$0</div></div>
+    </div>
+    <div class="ret-row">
+      <div class="ret-lbl">Total Rental Income at Retirement <span class="tip-i">i<span class="tt">Based on 2.5% p.a. compounded growth.</span></span></div>
+      <div style="text-align:right"><div class="ret-val" id="r-rentalret">$0</div><div class="ret-sub">/week</div></div>
+    </div>
+  </div>
+
+  <div class="email-card">
+    <div class="email-label">Send to Client</div>
+    <input type="text" id="pdfClientName" class="email-input" placeholder="Client name" oninput="syncName()">
+    <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Client Email Address</div><input type="email" id="clientEmail" class="email-input" placeholder="e.g. sarah@example.com" autocomplete="off">
+    <div class="btn-row">
+      <button class="btn-pdf" onclick="downloadPDF()">⬇ Download PDF</button>
+      <button class="btn-send" onclick="sendToClient()">✉ Send Email</button>
+    </div>
+    <div id="sendStatus" class="send-status"></div>
+  </div>
+</div>
+</div>
+
+<footer>&copy; 2026 Corbwood &amp; Associates Pty Ltd — ABN 96 617 441 700</footer>
+
+<script>
+// ── CONSTANTS & STATE ─────────────────────────────────────────────
+const PROP_DEFAULTS={single:{label:'Single (Freestanding)',rates:2500,insurance:2000},dual:{label:'Dual Occupation',rates:3500,insurance:2500},townhouse:{label:'Townhouse',rates:2500,insurance:3000}};
+const ZAPIER_URL=''; // Add your Zapier webhook URL here before deploying
+let numProps=1,resultView='all';
+const propState={1:{own:.25,lvr:50,type:'single'},2:{own:.25,lvr:50,type:'single'},3:{own:.25,lvr:50,type:'single'},4:{own:.25,lvr:50,type:'single'}};
+const perProp={};
+const $=id=>document.getElementById(id);
+const v=id=>parseFloat(($(id)?.value||'').replace(/,/g,''))||0;
+const fmtCommas=n=>(!n&&n!==0)?'':Math.round(Math.abs(n)).toLocaleString('en-AU');
+const fmt=n=>'$'+Math.round(Math.abs(n)).toLocaleString('en-AU');
+const fmtPct=n=>isNaN(n)||!isFinite(n)?'0.00%':n.toFixed(2)+'%';
+const fmtYrs=n=>isNaN(n)||!isFinite(n)||n<=0?'—':n.toFixed(1)+' yrs';
+const fmtWeek=n=>'$'+Math.round(Math.abs(n)).toLocaleString('en-AU')+'/wk';
+function FV(rate,nper,pmt,pv){if(rate===0)return-(pv+pmt*nper);return-(pv*Math.pow(1+rate,nper)+pmt*((Math.pow(1+rate,nper)-1)/rate));}
+
+// ── HELPERS ───────────────────────────────────────────────────────
+function syncName(){const n=$('clientName')?.value||'';if($('pdfClientName')&&$('pdfClientName')!==document.activeElement)$('pdfClientName').value=n;}
+function setText(id,text,cls){const el=$(id);if(!el)return;el.textContent=text;if(cls)el.className='res-val '+cls;}
+
+// ── VIEW SELECTOR ─────────────────────────────────────────────────
+function selectView(v){
+  resultView=v;
+  document.querySelectorAll('.res-prop-tab').forEach(t=>{
+    const tid=t.id.replace('rtab-','');
+    t.classList.toggle('active',String(v)===tid);
+  });
+  calc();
+}
+
+// ── PROPERTY PANELS ───────────────────────────────────────────────
+function buildPropPanels(){
+  const tabsEl=$('propTabs'),panelsEl=$('propPanels');
+  tabsEl.innerHTML='';panelsEl.innerHTML='';
+  for(let i=1;i<=4;i++){
+    const tab=document.createElement('button');
+    tab.className='prop-tab'+(i===1?' active':'');
+    tab.textContent='Property '+i;tab.style.display=i<=numProps?'':'none';
+    tab.onclick=()=>switchPropTab(i);tab.id='ptab-'+i;tabsEl.appendChild(tab);
+    const defs=PROP_DEFAULTS['single'];
+    const panel=document.createElement('div');
+    panel.className='prop-panel'+(i===1?' active':'');panel.id='ppanel-'+i;
+    panel.innerHTML=`
+      <div class="field">
+        <label>Property Type</label>
+        <select id="proptype${i}" onchange="setPropType(${i})">
+          <option value="single">Single (Freestanding)</option>
+          <option value="dual">Dual Occupation</option>
+          <option value="townhouse">Townhouse</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Purchase Price</label>
+        <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="price${i}" value="" class="currency-input" oninput="calc()"></div>
+      </div>
+      <div class="field">
+        <label>Weekly Rent (full property)</label>
+        <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="rent${i}" value="" class="currency-input" oninput="calc()"></div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Ownership %</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="input-wrap" style="flex:1"><input type="number" id="own_input${i}" min="10" max="50" step="5" value="25" class="no-pfx" oninput="setOwnLive(${i})" onblur="setOwn(${i})"></div>
+          <span style="font-size:14px;font-weight:700;color:var(--mteal)">%</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>LVR Option</label>
+        <div class="prop-tabs" style="margin-bottom:10px">
+          <button class="prop-tab lvr-btn lvr-btn-${i}" data-lvr="0" onclick="setLvr(${i},0)">Cash</button>
+          <button class="prop-tab lvr-btn lvr-btn-${i}" data-lvr="65" onclick="setLvr(${i},65)">65/35</button>
+          <button class="prop-tab lvr-btn lvr-btn-${i} active" data-lvr="50" onclick="setLvr(${i},50)">50/50</button>
+        </div>
+        <div class="computed-wrap" style="padding-top:0;border-top:none;margin-top:0">
+          <div class="computed-lbl">Your Share of Property Value</div>
+          <div class="computed" id="ownVal${i}">—</div>
+        </div>
+        <div class="computed-wrap" style="margin-top:8px;padding-top:8px">
+          <div class="computed-lbl">Your Super Contribution</div>
+          <div class="computed" id="superContrib${i}">—</div>
+        </div>
+        <div class="computed-wrap" style="margin-top:8px;padding-top:8px">
+          <div class="computed-lbl">Your Loan Amount</div>
+          <div class="computed" id="loanAmt${i}">—</div>
+        </div>
+      </div>
+`;
+    panelsEl.appendChild(panel);
+
+    // Build matching outgoing panel
+    const outPanelsEl=$('outPanels');
+    if(outPanelsEl){
+      const op=document.createElement('div');
+      op.className='prop-panel'+(i===1?' active':'');
+      op.id='opanel-'+i;
+      op.innerHTML=`
+        <div class="field"><label>PM Rate</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="input-wrap" style="flex:1"><input type="number" id="pm_rate${i}" min="5.5" max="8.8" step="0.1" value="8.8" class="no-pfx" oninput="calc()"></div>
+            <span style="font-size:14px;font-weight:700;color:var(--mteal)">%</span></div></div>
+        <div class="field"><label>Interest Rate</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="input-wrap" style="flex:1"><input type="number" id="rate${i}" min="6" max="9" step="0.01" value="6.34" class="no-pfx" oninput="calc()"></div>
+            <span style="font-size:14px;font-weight:700;color:var(--mteal)">%</span></div></div>
+        <div class="field"><label>Council &amp; Water Rates <span style="font-weight:400;text-transform:none;font-size:10px">(annual, full property)</span></label>
+          <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="buf_rates${i}" value="${defs.rates.toLocaleString()}" class="currency-input" oninput="calc()"></div></div>
+        <div class="field"><label>Insurance / Body Corporate <span style="font-weight:400;text-transform:none;font-size:10px">(annual, full property)</span></label>
+          <div class="input-wrap"><span class="pfx">$</span><input type="text" inputmode="numeric" id="buf_insurance${i}" value="${defs.insurance.toLocaleString()}" class="currency-input" oninput="calc()"></div></div>
+`;
+      outPanelsEl.appendChild(op);
+    }
+    // Build retirement panel
+    const retPanelsEl=$('retPanels');
+    if(retPanelsEl){
+      const rp=document.createElement('div');
+      rp.className='prop-panel'+(i===1?' active':'');
+      rp.id='rpanel-'+i;
+      rp.innerHTML=`
+        <div class="section-lbl" style="margin-top:0;padding-top:0;border-top:none">Property ${i}</div>
+        <div class="computed-wrap" style="padding-top:0;border-top:none">
+          <div class="computed-lbl">Your Portion Will Be Worth at Retirement</div>
+          <div class="computed" id="retVal${i}">—</div>
+        </div>
+        <div class="computed-wrap">
+          <div class="computed-lbl">Projected Weekly Rent at Retirement</div>
+          <div class="computed" id="retRent${i}">—</div>
+        </div>`;
+      retPanelsEl.appendChild(rp);
+    }
+  }
+}
+
+function switchPropTab(n){
+  for(let i=1;i<=4;i++){
+    $('ptab-'+i)?.classList.toggle('active',i===n);
+    $('ppanel-'+i)?.classList.toggle('active',i===n);
+    $('opanel-'+i)?.classList.toggle('active',i===n);
+    $('rpanel-'+i)?.classList.toggle('active',i===n);
+  }
+}
+
+function setPropType(propNum){
+  const sel=$('proptype'+propNum);if(!sel)return;
+  const type=sel.value;propState[propNum].type=type;
+  const defs=PROP_DEFAULTS[type];
+  const rEl=$('buf_rates'+propNum),iEl=$('buf_insurance'+propNum);
+  if(rEl)rEl.value=fmtCommas(defs.rates);
+  if(iEl)iEl.value=fmtCommas(defs.insurance);
+  calc();
+}
+
+function setOwnLive(propNum){
+  // Allow free typing — use raw value without snapping
+  const input=$('own_input'+propNum);
+  const raw=parseFloat(input.value);
+  if(!isNaN(raw)&&raw>0){
+    propState[propNum].own=Math.min(.5,Math.max(.1,raw/100));
+    calc();
+  }
+}
+function setOwn(propNum){
+  // On blur: snap to nearest valid value (10-50, step 5)
+  const input=$('own_input'+propNum);
+  let val=Math.round(Math.min(50,Math.max(10,parseFloat(input.value)||25))/5)*5;
+  input.value=val;propState[propNum].own=val/100;calc();
+}
+
+function setLvr(propNum,lvr){
+  propState[propNum].lvr=lvr;
+  document.querySelectorAll('.lvr-btn-'+propNum).forEach(btn=>btn.classList.toggle('active',parseInt(btn.dataset.lvr)===lvr));
+  calc();
+}
+
+function setPropCount(n){
+  numProps=n;
+  document.querySelectorAll('.prop-count-btn').forEach((b,i)=>b.classList.toggle('active',i+1===n));
+  for(let i=1;i<=4;i++){
+    const tab=$('ptab-'+i),rt=$('rtab-'+i);
+    if(tab)tab.style.display=i<=n?'':'none';
+    if(rt)rt.style.display=i<=n?'':'none';
+  }
+  const activeTabId=document.querySelector('#propTabs .prop-tab.active')?.id;
+  const activeNum=activeTabId?parseInt(activeTabId.split('-')[1]):1;
+  if(activeNum>n)switchPropTab(1);
+  if(typeof resultView==='number'&&resultView>n)selectView('all');
+  calc();
+}
+
+// ── MAIN CALC ─────────────────────────────────────────────────────
+function calc(){
+  const ss=(v('salary_sacrifice')||0)*52;
+  const income=v('income'),age=v('age'),retAge=v('ret_age'),acct=v('accounting'),yearsToRet=Math.max(0,retAge-age);
+  let totalPrice=0,totalLoan=0,totalWeeklyRent=0,totalBuffer=0,totalRates=0,totalIns=0;
+  let totalPmFees=0,totalLoanInt=0,totalTaxDep=0,totalPropValRet=0,totalRentRetWeek=0;
+
+  for(let i=1;i<=4;i++){
+    const price=v('price'+i),rent=v('rent'+i);
+    const own=propState[i].own;
+    const pmRate=(v('pm_rate'+i)||8.8)/100,rate=(v('rate'+i)||6.34)/100;
+    const effectivePrice=price*own,effectiveRent=rent*own;
+
+    if($('ownVal'+i))$('ownVal'+i).textContent=price>0?fmt(effectivePrice):'—';
+    const lvrPct=(propState[i].lvr||0)/100;
+    const loan=effectivePrice*lvrPct,superContrib=effectivePrice*(1-lvrPct);
+    if($('loanAmt'+i))$('loanAmt'+i).textContent=loan>0?fmt(loan):'$0 (cash purchase)';
+    if($('superContrib'+i))$('superContrib'+i).textContent=fmt(superContrib);
+
+    const propValRet_i=yearsToRet>0&&effectivePrice>0?Math.round(FV(0.04,yearsToRet,0,-effectivePrice)):effectivePrice;
+    const rentRetWeek_i=yearsToRet>0&&effectiveRent>0?Math.round(FV(0.025,yearsToRet,0,-effectiveRent)):effectiveRent;
+    if($('retVal'+i))$('retVal'+i).textContent=effectivePrice>0?fmt(propValRet_i):'—';
+    if($('retRent'+i))$('retRent'+i).textContent=effectiveRent>0?fmtWeek(rentRetWeek_i):'—';
+
+    const pmFees_i=effectiveRent*pmRate*52,loanInt_i=loan*rate,taxDep_i=effectivePrice*0.003;
+    const bufRates=v('buf_rates'+i),bufIns=v('buf_insurance'+i);
+    const annRent_i=effectiveRent*52;
+    const ec_i=(income*0.12)/Math.max(1,numProps),ss_i=ss/Math.max(1,numProps),acct_i=acct/Math.max(1,numProps);
+
+    perProp[i]={rent:annRent_i,ec:ec_i,ss:ss_i,dep:taxDep_i,interest:loanInt_i,pm:pmFees_i,
+      rates:bufRates*own,ins:bufIns*own,acct:acct_i,
+      totalIn:annRent_i+ec_i+ss_i+taxDep_i,
+      totalOut:loanInt_i+pmFees_i+(bufRates*own)+(bufIns*own)+acct_i,
+      price:effectivePrice,loan:loan,propValRet:propValRet_i,rentRetWeek:rentRetWeek_i};
+    perProp[i].cashflow=perProp[i].totalIn-perProp[i].totalOut;
+
+    if(i<=numProps){
+      totalPrice+=effectivePrice;totalLoan+=loan;totalWeeklyRent+=effectiveRent;
+      totalPmFees+=pmFees_i;totalLoanInt+=loanInt_i;totalTaxDep+=taxDep_i;
+      totalBuffer+=(bufRates+bufIns)*own+pmFees_i;totalRates+=bufRates*own;totalIns+=bufIns*own;
+      totalPropValRet+=propValRet_i;totalRentRetWeek+=rentRetWeek_i;
+    }
+  }
+  totalBuffer+=acct;
+  const annualRent=totalWeeklyRent*52,rentalYield=totalPrice>0?(annualRent/totalPrice)*100:0;
+  const employerContrib=income*0.12;
+  const totalIn=Math.round(annualRent+employerContrib+ss+totalTaxDep);
+  const totalOut=Math.round(totalLoanInt+totalRates+totalIns+acct+totalPmFees);
+  const cashflow=totalIn-totalOut;
+  const cashflowForDebt=Math.round(annualRent+employerContrib+ss+totalTaxDep)-totalOut;
+  const yearsDebtFree=cashflowForDebt>0?(totalLoan/cashflowForDebt)*0.8:Infinity;
+  const cashRetYears=Math.max(0,yearsToRet-yearsDebtFree);
+  const cashBal=Math.round(cashRetYears*(annualRent+employerContrib+ss));
+
+  if(resultView==='all'){
+    if($('r-yield'))$('r-yield').textContent=fmtPct(rentalYield)+' gross rental yield';
+    setText('r-rent',fmt(annualRent),'pos');setText('r-ec',fmt(employerContrib),'pos');setText('r-ss',fmt(ss),'pos');
+    setText('r-ss',fmt(ss),'pos');
+    setText('r-dep',fmt(totalTaxDep),'pos');setText('r-in',fmt(totalIn),'pos');
+    setText('r-interest',fmt(totalLoanInt),'neg');setText('r-pm',fmt(totalPmFees),'neg');
+    setText('r-rates',fmt(totalRates),'neg');setText('r-ins',fmt(totalIns),'neg');
+    setText('r-acc',fmt(acct),'neg');setText('r-out',fmt(totalOut),'neg');
+    const cfEl=$('r-cashflow');
+    if(cfEl){cfEl.textContent=(cashflow>=0?'+':'−')+fmt(Math.abs(cashflow));cfEl.style.color=cashflow>=0?'var(--bteal)':'#FF7B7B';}
+    if($('r-debtfree'))$('r-debtfree').textContent=fmtYrs(yearsDebtFree);
+    setText('r-buffer',fmt(totalBuffer),'acc');
+    if($('r-propval'))$('r-propval').textContent=fmt(totalPropValRet);
+    if($('r-cash'))$('r-cash').textContent=fmt(cashBal);
+    if($('r-rentalret'))$('r-rentalret').textContent=fmtWeek(totalRentRetWeek);
+  } else {
+    const p=perProp[resultView];
+    if(p&&p.price>0){
+      if($('r-yield'))$('r-yield').textContent=fmtPct(p.rent/p.price*100)+' gross yield — Property '+resultView;
+      setText('r-rent',fmt(p.rent),'pos');setText('r-ec',fmt(p.ec),'pos');setText('r-ss',fmt(p.ss||0),'pos');
+      setText('r-ss',fmt(p.ss||0),'pos');
+      setText('r-dep',fmt(p.dep),'pos');setText('r-in',fmt(p.totalIn),'pos');
+      setText('r-interest',fmt(p.interest),'neg');setText('r-pm',fmt(p.pm),'neg');
+      setText('r-rates',fmt(p.rates),'neg');setText('r-ins',fmt(p.ins),'neg');
+      setText('r-acc',fmt(p.acct),'neg');setText('r-out',fmt(p.totalOut),'neg');
+      const cfEl=$('r-cashflow');
+      if(cfEl){cfEl.textContent=(p.cashflow>=0?'+':'−')+fmt(Math.abs(p.cashflow));cfEl.style.color=p.cashflow>=0?'var(--bteal)':'#FF7B7B';}
+      const dfYrs=p.totalIn-p.totalOut>0?(p.loan/(p.totalIn-p.totalOut))*0.8:Infinity;
+      if($('r-debtfree'))$('r-debtfree').textContent=fmtYrs(dfYrs);
+      setText('r-buffer',fmt(p.rates+p.ins+p.pm+p.acct),'acc');
+      if($('r-propval'))$('r-propval').textContent=fmt(p.propValRet);
+      if($('r-cash'))$('r-cash').textContent='—';
+      if($('r-rentalret'))$('r-rentalret').textContent=fmtWeek(p.rentRetWeek);
+    }
+  }
+}
+
+// ── GENERATE EMAIL HTML ───────────────────────────────────────────
+function generateEmailHTML(){
+  const clientName=$('clientName')?.value||'Client';
+  const date=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  const g=id=>$(id)?.textContent||'—';
+  const ss=v('salary_sacrifice')||0;
+
+  let propRows='';
+  for(let i=1;i<=numProps;i++){
+    const price=v('price'+i);if(!price)continue;
+    const own=propState[i].own;
+    const lvrLbl=propState[i].lvr===0?'Cash':propState[i].lvr+'/'+(100-propState[i].lvr);
+    const typeLbl=PROP_DEFAULTS[propState[i].type]?.label||'Property';
+    propRows+=`
+    <tr><td colspan="2" style="background:#25263D;color:#fff;padding:8px 16px;font-weight:bold;font-size:12px;font-family:Arial,sans-serif">Property ${i} — ${typeLbl}</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">Purchase Price</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-family:Arial,sans-serif;font-size:13px">$${Math.round(price).toLocaleString('en-AU')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">Weekly Rent</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-family:Arial,sans-serif;font-size:13px">$${Math.round(v('rent'+i)).toLocaleString('en-AU')}/wk</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">Ownership</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-family:Arial,sans-serif;font-size:13px">${own*100}%</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">LVR</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-family:Arial,sans-serif;font-size:13px">${lvrLbl}</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">Your Super Contribution</td><td style="padding:7px 16px;font-weight:bold;text-align:right;color:#2A5B62;font-family:Arial,sans-serif;font-size:13px">${$('superContrib'+i)?.textContent||'—'}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">Your Loan Amount</td><td style="padding:7px 16px;font-weight:bold;text-align:right;color:#2A5B62;font-family:Arial,sans-serif;font-size:13px">${$('loanAmt'+i)?.textContent||'—'}</td></tr>`;
+  }
+
+  const ssRow=ss>0?`<tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-family:Arial,sans-serif;font-size:13px">Salary Sacrifice</td><td style="color:#1A7A45;padding:7px 16px;font-weight:bold;text-align:right;font-family:Arial,sans-serif;font-size:13px">${g('r-ss')}</td></tr>`:'';
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6F8;font-family:Arial,sans-serif">
+<div style="max-width:600px;margin:0 auto;background:#F4F6F8">
+
+<div style="background:#25263D;padding:20px 24px;text-align:center">
+  <p style="color:#fff;margin:0;font-size:18px;font-weight:bold;letter-spacing:1px">CORBWOOD &amp; ASSOCIATES</p>
+  <p style="color:#32B0C6;font-size:10px;margin:4px 0 0;text-transform:uppercase;letter-spacing:2px">Co-Invest Cashflow Projection</p>
+</div>
+<div style="background:#2e2f4d;padding:10px 24px;display:table;width:100%;box-sizing:border-box">
+  <span style="color:rgba(255,255,255,.7);font-size:13px;display:table-cell">${clientName}</span>
+  <span style="color:rgba(255,255,255,.4);font-size:13px;display:table-cell;text-align:right">${date}</span>
+</div>
+
+<div style="background:linear-gradient(135deg,#2A5B62,#2e2f4d);padding:28px 24px;text-align:center">
+  <p style="color:rgba(255,255,255,.55);font-size:10px;margin:0 0 6px;text-transform:uppercase;letter-spacing:2px">Annual Cashflow</p>
+  <p style="color:#32B0C6;font-size:40px;font-weight:bold;margin:0;letter-spacing:-1px">${g('r-cashflow')}</p>
+  <p style="color:rgba(255,255,255,.4);font-size:12px;margin:8px 0 0">${g('r-yield')} &nbsp;·&nbsp; Est. ${g('r-debtfree')} to debt-free</p>
+</div>
+
+<div style="padding:20px 16px">
+
+  <p style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#8A9BAE;margin:0 0 10px">Client Details</p>
+  <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;margin-bottom:16px">
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Gross Annual Income</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">$${Math.round(v('income')).toLocaleString('en-AU')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Salary Sacrifice (weekly)</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">$${Math.round(ss)} / week</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Age of Youngest</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${v('age')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Expected Retirement Age</td><td style="padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${v('ret_age')}</td></tr>
+  </table>
+
+  <p style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#8A9BAE;margin:0 0 10px">Properties</p>
+  <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;margin-bottom:16px">${propRows}</table>
+
+  <p style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#8A9BAE;margin:0 0 10px">Annual Cashflow Breakdown</p>
+  <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;margin-bottom:16px">
+    <tr style="background:#25263D"><td colspan="2" style="color:#fff;padding:8px 16px;font-weight:bold;font-size:12px">Incomings</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Annual Rental Income</td><td style="color:#1A7A45;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-rent')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Employer Contributions (12%)</td><td style="color:#1A7A45;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-ec')}</td></tr>
+    ${ssRow}
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Tax Depreciation</td><td style="color:#1A7A45;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-dep')}</td></tr>
+    <tr style="background:#EEF7EF"><td style="color:#1A7A45;padding:8px 16px;font-weight:bold;font-size:13px">Total Incomings</td><td style="color:#1A7A45;padding:8px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-in')}</td></tr>
+    <tr style="background:#25263D"><td colspan="2" style="color:#fff;padding:8px 16px;font-weight:bold;font-size:12px">Outgoings</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Loan Interest</td><td style="color:#C41A1A;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-interest')}</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Property Management Fees</td><td style="color:#C41A1A;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-pm')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Council &amp; Water Rates</td><td style="color:#C41A1A;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-rates')}</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Insurance / Body Corporate</td><td style="color:#C41A1A;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-ins')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Accounting &amp; Admin</td><td style="color:#C41A1A;padding:7px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-acc')}</td></tr>
+    <tr style="background:#FEEFEF"><td style="color:#C41A1A;padding:8px 16px;font-weight:bold;font-size:13px">Total Outgoings</td><td style="color:#C41A1A;padding:8px 16px;font-weight:bold;text-align:right;font-size:13px">${g('r-out')}</td></tr>
+  </table>
+
+  <p style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#8A9BAE;margin:0 0 10px">Retirement Projection</p>
+  <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;margin-bottom:24px">
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Your share of properties will be worth</td><td style="padding:7px 16px;font-weight:bold;text-align:right;color:#25263D;font-size:13px">${g('r-propval')}</td></tr>
+    <tr><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Cash Balance at Retirement</td><td style="padding:7px 16px;font-weight:bold;text-align:right;color:#25263D;font-size:13px">${g('r-cash')}</td></tr>
+    <tr style="background:#F9FAFB"><td style="color:#5D5D5D;padding:7px 16px;font-size:13px">Weekly Rental Income at Retirement</td><td style="padding:7px 16px;font-weight:bold;text-align:right;color:#25263D;font-size:13px">${g('r-rentalret')} / week</td></tr>
+  </table>
+
+  <p style="font-size:11px;color:#8A9BAE;line-height:1.5;margin:0 0 16px">This projection is for illustrative purposes only and does not constitute financial advice. Figures are based on the inputs provided and may differ from actual results.</p>
+  <p style="font-size:14px;margin:0"><strong>Corbwood &amp; Associates</strong><br><a href="https://corbwood.com.au" style="color:#32B0C6;text-decoration:none">corbwood.com.au</a></p>
+</div>
+</div></body></html>`;
+}
+
+// ── PDF GENERATION ────────────────────────────────────────────────
+async function generatePDF(){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  const W=210,navy=[37,38,61],teal=[50,176,198],white=[255,255,255],grey=[90,90,90],green=[26,122,69],red=[196,26,26],ltbg=[249,250,251];
+  const clientName=$('clientName')?.value||'Client';
+  const date=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  const g=id=>$(id)?.textContent||'—';
+  const ss=v('salary_sacrifice')||0;
+  let y=0;
+
+  // Header
+  doc.setFillColor(...navy);doc.rect(0,0,W,22,'F');
+  doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(14);
+  doc.text('CORBWOOD & ASSOCIATES',14,12);
+  doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(...teal);
+  doc.text('CO-INVEST CASHFLOW PROJECTION',14,18);
+  doc.setTextColor(180,210,220);doc.text(date,W-14,12,{align:'right'});
+  doc.text(clientName,W-14,18,{align:'right'});
+  y=28;
+
+  // Annual Cashflow highlight bar
+  doc.setFillColor(42,91,98);doc.rect(0,22,W,16,'F');
+  doc.setTextColor(100,180,200);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text('ANNUAL CASHFLOW',W/2,27,{align:'center'});
+  doc.setTextColor(...teal);doc.setFont('helvetica','bold');doc.setFontSize(16);
+  doc.text(g('r-cashflow'),W/2,34,{align:'center'});
+  doc.setTextColor(180,210,220);doc.setFont('helvetica','normal');doc.setFontSize(7);
+  doc.text(g('r-yield')+'  |  Est. '+g('r-debtfree')+' to debt-free',W/2,38,{align:'center'});
+  y=44;
+
+  // Two-column layout: left=inputs, right=results
+  const LX=14,LW=90,RX=112,RW=84;
+
+  // ── LEFT COLUMN ───────────────────────────────────────────────
+  // Client details section
+  doc.setFillColor(...navy);doc.rect(LX,y,LW,6,'F');
+  doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.text('YOUR DETAILS',LX+3,y+4.2);y+=6;
+
+  const cdetails=[['Gross Annual Income','$'+Math.round(v('income')).toLocaleString('en-AU')],
+    ['Salary Sacrifice (weekly)',ss>0?'$'+Math.round(ss)+'/wk':'None'],
+    ['Age of Youngest',''+v('age')],['Retirement Age',''+v('ret_age')]];
+  cdetails.forEach(([lbl,val],idx)=>{
+    doc.setFillColor(...(idx%2===0?ltbg:white));doc.rect(LX,y,LW,5,'F');
+    doc.setTextColor(...grey);doc.setFont('helvetica','normal');doc.setFontSize(7);
+    doc.text(lbl,LX+2,y+3.5);
+    doc.setTextColor(...navy);doc.setFont('helvetica','bold');
+    doc.text(val,LX+LW-2,y+3.5,{align:'right'});y+=5;
+  });
+  y+=3;
+
+  // Properties
+  for(let i=1;i<=numProps;i++){
+    const price=v('price'+i);if(!price)continue;
+    const own=propState[i].own;
+    const lvrLbl=propState[i].lvr===0?'Cash':propState[i].lvr+'/'+(100-propState[i].lvr);
+    const typeLbl=PROP_DEFAULTS[propState[i].type]?.label||'—';
+    doc.setFillColor(...navy);doc.rect(LX,y,LW,6,'F');
+    doc.setTextColor(...teal);doc.setFont('helvetica','bold');doc.setFontSize(7);
+    doc.text('PROPERTY '+i+' — '+typeLbl.toUpperCase(),LX+3,y+4.2);y+=6;
+    const prows=[['Purchase Price','$'+Math.round(price).toLocaleString('en-AU')],
+      ['Weekly Rent','$'+Math.round(v('rent'+i))+'/wk'],
+      ['Ownership',''+Math.round(own*100)+'%'],['LVR',lvrLbl],
+      ['Your Super Contribution',$('superContrib'+i)?.textContent||'—'],
+      ['Your Loan Amount',$('loanAmt'+i)?.textContent||'—']];
+    prows.forEach(([lbl,val],idx)=>{
+      doc.setFillColor(...(idx%2===0?ltbg:white));doc.rect(LX,y,LW,5,'F');
+      doc.setTextColor(...grey);doc.setFont('helvetica','normal');doc.setFontSize(7);
+      doc.text(lbl,LX+2,y+3.5);
+      doc.setTextColor(...navy);doc.setFont('helvetica','bold');
+      doc.text(val,LX+LW-2,y+3.5,{align:'right'});y+=5;
+    });
+    y+=2;
+  }
+
+  // Outgoings (first property only for space)
+  if(numProps>0){
+    doc.setFillColor(...navy);doc.rect(LX,y,LW,6,'F');
+    doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(7);
+    doc.text('OUTGOINGS (PROPERTY 1)',LX+3,y+4.2);y+=6;
+    const orows=[['PM Rate',''+v('pm_rate1')+'%'],['Interest Rate',''+v('rate1')+'%'],
+      ['Council & Water Rates','$'+Math.round(v('buf_rates1')).toLocaleString('en-AU')],
+      ['Insurance / BC','$'+Math.round(v('buf_insurance1')).toLocaleString('en-AU')],
+      ['Accounting (SMSF)','$'+Math.round(v('accounting')).toLocaleString('en-AU')]];
+    orows.forEach(([lbl,val],idx)=>{
+      doc.setFillColor(...(idx%2===0?ltbg:white));doc.rect(LX,y,LW,5,'F');
+      doc.setTextColor(...grey);doc.setFont('helvetica','normal');doc.setFontSize(7);
+      doc.text(lbl,LX+2,y+3.5);
+      doc.setTextColor(...navy);doc.setFont('helvetica','bold');
+      doc.text(val,LX+LW-2,y+3.5,{align:'right'});y+=5;
+    });
+  }
+
+  // ── RIGHT COLUMN ──────────────────────────────────────────────
+  let ry=44;
+
+  // Incomings
+  doc.setFillColor(...navy);doc.rect(RX,ry,RW,6,'F');
+  doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.text('INCOMINGS (PER YEAR)',RX+3,ry+4.2);ry+=6;
+  const incomings=[['Rental Income',g('r-rent'),'pos'],['Employer Contrib. (12%)',g('r-ec'),'pos'],
+    ...(ss>0?[['Salary Sacrifice',g('r-ss'),'pos']]:[]),
+    ['Tax Depreciation',g('r-dep'),'pos'],['Total Incomings',g('r-in'),'total']];
+  incomings.forEach(([lbl,val,type],idx)=>{
+    const isTotal=type==='total';
+    doc.setFillColor(...(isTotal?[238,247,239]:idx%2===0?ltbg:white));
+    doc.rect(RX,ry,RW,isTotal?6:5,'F');
+    doc.setTextColor(...grey);doc.setFont('helvetica',isTotal?'bold':'normal');doc.setFontSize(7);
+    doc.text(lbl,RX+2,ry+(isTotal?4.2:3.5));
+    doc.setTextColor(...green);doc.setFont('helvetica','bold');
+    doc.text(val,RX+RW-2,ry+(isTotal?4.2:3.5),{align:'right'});
+    ry+=isTotal?6:5;
+  });
+  ry+=3;
+
+  // Outgoings
+  doc.setFillColor(...navy);doc.rect(RX,ry,RW,6,'F');
+  doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.text('OUTGOINGS (PER YEAR)',RX+3,ry+4.2);ry+=6;
+  const outgoings=[['Loan Interest',g('r-interest'),'neg'],['PM Fees',g('r-pm'),'neg'],
+    ['Council & Water',g('r-rates'),'neg'],['Insurance / BC',g('r-ins'),'neg'],
+    ['Accounting',g('r-acc'),'neg'],['Total Outgoings',g('r-out'),'total']];
+  outgoings.forEach(([lbl,val,type],idx)=>{
+    const isTotal=type==='total';
+    doc.setFillColor(...(isTotal?[254,239,239]:idx%2===0?ltbg:white));
+    doc.rect(RX,ry,RW,isTotal?6:5,'F');
+    doc.setTextColor(...grey);doc.setFont('helvetica',isTotal?'bold':'normal');doc.setFontSize(7);
+    doc.text(lbl,RX+2,ry+(isTotal?4.2:3.5));
+    doc.setTextColor(...red);doc.setFont('helvetica','bold');
+    doc.text(val,RX+RW-2,ry+(isTotal?4.2:3.5),{align:'right'});
+    ry+=isTotal?6:5;
+  });
+  ry+=3;
+
+  // Key metrics
+  doc.setFillColor(42,91,98);doc.rect(RX,ry,RW,5,'F');
+  doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.text('1-YEAR HOLDING COSTS (YOUR SHARE)',RX+2,ry+3.5);
+  doc.setTextColor(...teal);doc.text(g('r-buffer'),RX+RW-2,ry+3.5,{align:'right'});
+  ry+=8;
+
+  // Retirement
+  doc.setFillColor(...navy);doc.rect(RX,ry,RW,6,'F');
+  doc.setTextColor(...white);doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.text('RETIREMENT PROJECTION',RX+3,ry+4.2);ry+=6;
+  const retRows=[['Properties Worth',g('r-propval')],['Cash at Retirement',g('r-cash')],['Weekly Rent at Retirement',g('r-rentalret')+'/wk']];
+  retRows.forEach(([lbl,val],idx)=>{
+    doc.setFillColor(...(idx%2===0?ltbg:white));doc.rect(RX,ry,RW,5,'F');
+    doc.setTextColor(...grey);doc.setFont('helvetica','normal');doc.setFontSize(7);
+    doc.text(lbl,RX+2,ry+3.5);
+    doc.setTextColor(...navy);doc.setFont('helvetica','bold');
+    doc.text(val,RX+RW-2,ry+3.5,{align:'right'});ry+=5;
+  });
+
+  // Footer
+  doc.setFillColor(...[245,246,248]);doc.rect(0,281,W,16,'F');
+  doc.setTextColor(140,155,174);doc.setFont('helvetica','normal');doc.setFontSize(7);
+  doc.text('Corbwood & Associates Pty Ltd — ABN 96 617 441 700 — corbwood.com.au',W/2,289,{align:'center'});
+  doc.text('This projection is for illustrative purposes only and does not constitute financial advice.',W/2,293,{align:'center'});
+
+  const filename='Corbwood_CoInvest_'+clientName.replace(/\s+/g,'_')+'.pdf';
+  return{blob:doc.output('blob'),filename};
+}
+
+
+// ── DOWNLOAD PDF ──────────────────────────────────────────────────
+async function downloadPDF(){
+  const status=$('sendStatus');status.textContent='Generating PDF...';status.style.color='var(--mteal)';
+  try{const{blob,filename}=await generatePDF();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);status.textContent='PDF downloaded.';status.style.color='#5DDBA0';}
+  catch(e){status.textContent='PDF error: '+e.message;status.style.color='#FF7B7B';}
+}
+
+// ── SEND TO CLIENT ────────────────────────────────────────────────
+async function sendToClient(){
+  const email=$('clientEmail')?.value?.trim(),clientName=$('clientName')?.value?.trim()||'Client',status=$('sendStatus');
+  if(!email||!email.includes('@')){status.textContent='Please enter a valid email.';status.style.color='#FF7B7B';return;}
+  status.textContent='Generating PDF and email...';status.style.color='var(--mteal)';
+  try{
+    // Generate and download PDF
+    const{blob,filename}=await generatePDF();
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);
+    // Generate full HTML email body client-side (includes all inputs + results)
+    const emailHTML=generateEmailHTML();
+    const payload={
+      to_email:email,
+      client_name:clientName,
+      subject:'Your Corbwood Co-Invest Cashflow Projection — '+clientName,
+      email_body:emailHTML
+    };
+    if(ZAPIER_URL&&ZAPIER_URL!=='ZAPIER_WEBHOOK_URL_HERE'){
+      await fetch(ZAPIER_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+      status.textContent='PDF saved + email sent to '+email;status.style.color='#5DDBA0';
+    }else{status.textContent='PDF downloaded. Add Zapier webhook URL to enable email.';status.style.color='var(--mteal)';}
+  }catch(e){status.textContent='Error: '+e.message;status.style.color='#FF7B7B';}
+}
+
+// ── CURRENCY FORMATTERS ───────────────────────────────────────────
+function attachCurrencyFormatters(){
+  document.querySelectorAll('.currency-input').forEach(el=>{
+    el.addEventListener('focus',function(){this.value=this.value.replace(/,/g,'');});
+    el.addEventListener('blur',function(){const num=parseFloat(this.value.replace(/,/g,''));if(!isNaN(num))this.value=fmtCommas(num);calc();});
+  });
+  document.querySelectorAll('.currency-input').forEach(el=>{const raw=el.value.replace(/,/g,'');const num=parseFloat(raw);if(!isNaN(num)&&raw!=='')el.value=fmtCommas(num);});
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+buildPropPanels();
+attachCurrencyFormatters();
+['income','age','ret_age','accounting','salary_sacrifice'].forEach(id=>$(id)?.addEventListener('input',calc));
+calc();
+</script>
+</body>
+</html>
