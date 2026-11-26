@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRISM — Version Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Lato',sans-serif;background:#0E0F1A;min-height:100vh;color:#fff;}
+
+header{background:#25263D;padding:22px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);}
+.logo{font-size:20px;font-weight:900;color:#fff;letter-spacing:.5px;}
+.logo span{color:#32B0C6;}
+.header-sub{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+
+.hero{padding:52px 40px 40px;text-align:center;}
+.hero h1{font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:10px;}
+.hero h1 span{color:#32B0C6;}
+.hero p{font-size:15px;color:rgba(255,255,255,.4);max-width:480px;margin:0 auto;line-height:1.6;}
+
+.versions{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;padding:0 40px 60px;max-width:1100px;margin:0 auto;}
+
+.card{background:#1A1B2E;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;transition:transform .15s,border-color .15s;text-decoration:none;display:block;}
+.card:hover{transform:translateY(-3px);border-color:rgba(50,176,198,.4);}
+
+.card-top{background:linear-gradient(135deg,#25263D,#1e2040);padding:24px 24px 20px;position:relative;}
+.card-version{display:inline-flex;align-items:center;gap:8px;background:rgba(50,176,198,.15);border:1px solid rgba(50,176,198,.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#32B0C6;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.card-version.latest::after{content:'LATEST';background:#32B0C6;color:#25263D;font-size:9px;font-weight:900;padding:2px 7px;border-radius:10px;letter-spacing:1px;}
+.card-top h2{font-size:19px;font-weight:900;color:#fff;margin-bottom:6px;letter-spacing:-.3px;}
+.card-top p{font-size:12px;color:rgba(255,255,255,.45);line-height:1.5;}
+
+.card-date{font-size:10px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;margin-top:12px;}
+
+.card-body{padding:18px 24px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.tag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,.5);}
+.tag.new{background:rgba(50,176,198,.1);border-color:rgba(50,176,198,.25);color:#32B0C6;}
+
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);}
+.screen-count{font-size:12px;color:rgba(255,255,255,.35);}
+.open-btn{background:#32B0C6;color:#25263D;font-family:'Lato',sans-serif;font-size:12px;font-weight:900;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;display:inline-block;letter-spacing:.3px;}
+.open-btn:hover{background:#2A9DB5;}
+
+.wip-card .card-top{background:linear-gradient(135deg,#1f1a30,#2a2040);}
+.wip-card .card-version{background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3);color:#F5A623;}
+.wip-badge{background:rgba(245,166,35,.15);color:#F5A623;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;border:1px solid rgba(245,166,35,.2);}
+
+.section-lbl{padding:8px 40px 18px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.2);}
+
+footer{text-align:center;padding:24px;font-size:11px;color:rgba(255,255,255,.2);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PRISM <span>by Corbwood</span></div>
+  <div class="header-sub">Version Library</div>
+</header>
+
+<div class="hero">
+  <h1>PRISM <span>Journey</span></h1>
+  <p>All versions of the PRISM concept deck, from first draft to latest build. Click a version to open it.</p>
+</div>
+
+<div class="section-lbl">Live Versions</div>
+<div class="versions">
+
+  <!-- V1 -->
+  <a class="card" href="prism-concept-screens.html" target="_blank">
+    <div class="card-top">
+      <div class="card-version">V1</div>
+      <h2>Original Concept</h2>
+      <p>First full concept deck — 40 screens across all 10 journey stages, single SMSF path.</p>
+      <div class="card-date">October 2026</div>
+    </div>
+    <div class="card-body">
+      <div class="tag-row">
+        <span class="tag">Single path</span>
+        <span class="tag">~40 screens</span>
+        <span class="tag">Scrollable deck</span>
+        <span class="tag">Stage overview</span>
+      </div>
+      <div class="card-footer">
+        <span class="screen-count">40 screens · 10 stages</span>
+        <span class="open-btn">Open V1 →</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- V2 — LIVE -->
+  <a class="card" href="prism-v2.html" target="_blank">
+    <div class="card-top">
+      <div class="card-version latest">V2 &nbsp;</div>
+      <h2>Full Rebuild — With Bird</h2>
+      <p>Bird mascot guide · Both SMSF paths (New + Existing) · 45+ screens · Scroll view and Presentation mode.</p>
+      <div class="card-date">30 October 2026</div>
+    </div>
+    <div class="card-body">
+      <div class="tag-row">
+        <span class="tag new">🐦 Bird mascot</span>
+        <span class="tag new">Both paths</span>
+        <span class="tag new">▶ Present mode</span>
+        <span class="tag new">45+ screens</span>
+        <span class="tag">Stages 2,3,4,5,6,7,8,9 expanded</span>
+      </div>
+      <div class="card-footer">
+        <span class="screen-count">45+ screens · 2 paths · live</span>
+        <span class="open-btn">Open V2 →</span>
+      </div>
+    </div>
+  </a>
+
+
+  <!-- Concept 04 — A Bird in the Hand -->
+  <a class="card" href="prism-concept04.html" target="_blank">
+    <div class="card-top" style="background:linear-gradient(135deg,#1C2040,#2A2010)">
+      <div class="card-version latest" style="background:rgba(196,160,80,.2);border-color:rgba(196,160,80,.4);color:#C4A050;">Concept 04</div>
+      <h2 style="color:#FDFAF5;">A Bird in the Hand</h2>
+      <p style="color:rgba(255,255,255,.5);">Concept 04 branding — earthy neutrals, royal blue, gold. Same screens and bird mascot, completely different visual treatment.</p>
+      <div class="card-date">9 November 2026</div>
+    </div>
+    <div class="card-body">
+      <div class="tag-row">
+        <span class="tag new" style="background:rgba(196,160,80,.12);border-color:rgba(196,160,80,.3);color:#9A7A30;">🐦 Gold bird</span>
+        <span class="tag new" style="background:rgba(196,160,80,.12);border-color:rgba(196,160,80,.3);color:#9A7A30;">Royal blue</span>
+        <span class="tag new" style="background:rgba(196,160,80,.12);border-color:rgba(196,160,80,.3);color:#9A7A30;">Warm sand</span>
+        <span class="tag">Same screens as V2</span>
+      </div>
+      <div class="card-footer">
+        <span class="screen-count">45+ screens · Concept 04 palette</span>
+        <span class="open-btn" style="background:#1A30A8;">Open →</span>
+      </div>
+    </div>
+  </a>
+
+
+  <!-- Concept 03 — Nest Egg -->
+  <a class="card" href="prism-concept03.html" target="_blank">
+    <div class="card-top" style="background:linear-gradient(135deg,#2E3818,#4A5225)">
+      <div class="card-version latest" style="background:rgba(220,223,40,.2);border-color:rgba(220,223,40,.4);color:#DCDF28;">Concept 03</div>
+      <h2 style="color:#F4F2EC;">Nest Egg</h2>
+      <p style="color:rgba(255,255,255,.5);">Concept 03 branding — earthy olive greens, dusty blue, bold yellow pop. Dynamic warmth and community energy.</p>
+      <div class="card-date">9 November 2026</div>
+    </div>
+    <div class="card-body">
+      <div class="tag-row">
+        <span class="tag new" style="background:rgba(74,82,37,.2);border-color:rgba(74,82,37,.4);color:#5A6830;">🪺 Olive greens</span>
+        <span class="tag new" style="background:rgba(220,223,40,.12);border-color:rgba(220,223,40,.3);color:#8A8A10;">Yellow pop</span>
+        <span class="tag new" style="background:rgba(107,146,170,.12);border-color:rgba(107,146,170,.3);color:#4A6A88;">Dusty blue</span>
+        <span class="tag">Same screens as V2</span>
+      </div>
+      <div class="card-footer">
+        <span class="screen-count">45+ screens · Concept 03 palette</span>
+        <span class="open-btn" style="background:#4A5225;">Open →</span>
+      </div>
+    </div>
+  </a>
+
+
+  <!-- The Nest — fresh build -->
+  <a class="card" href="the-nest.html" target="_blank">
+    <div class="card-top" style="background:linear-gradient(135deg,#2E3818,#1A210A)">
+      <div class="card-version latest" style="background:rgba(220,223,40,.18);border-color:rgba(220,223,40,.4);color:#DCDF28;">The Nest</div>
+      <h2 style="color:#F4F2EC;">Apple-Style Rebuild</h2>
+      <p style="color:rgba(255,255,255,.45);">Concept 03 · Full rebuild with Apple onboarding principles. One action per screen, clean and minimal. Built slide by slide.</p>
+      <div class="card-date">10 November 2026 — In progress</div>
+    </div>
+    <div class="card-body">
+      <div class="tag-row">
+        <span class="tag new" style="background:rgba(220,223,40,.12);border-color:rgba(220,223,40,.3);color:#8A8A10;">🪺 Nest symbol</span>
+        <span class="tag new" style="background:rgba(74,82,37,.2);border-color:rgba(74,82,37,.4);color:#5A6830;">One action/screen</span>
+        <span class="tag new" style="background:rgba(74,82,37,.2);border-color:rgba(74,82,37,.4);color:#5A6830;">Apple principles</span>
+        <span class="tag">Building now</span>
+      </div>
+      <div class="card-footer">
+        <span class="screen-count">In progress · Concept 03 palette</span>
+        <span class="open-btn" style="background:#3A4820;">Open →</span>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<footer>PRISM · Corbwood & Associates · Internal concept deck</footer>
+
+<script>
+// When V2 goes live, replace the WIP card above with:
+// <a class="card" href="prism-v2.html" target="_blank">
+//   <div class="card-top">
+//     <div class="card-version latest">V2 &nbsp;</div>
+//     ...
+// </a>
+</script>
+</body>
+</html>
