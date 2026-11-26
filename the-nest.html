@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nest — Corbwood</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Lato',sans-serif;background:#111A06;color:#2A3012;min-height:100vh;}
+.page-header{background:#1E2D0A;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:900;}
+.page-logo{font-size:16px;font-weight:700;color:#F5F0E8;display:flex;align-items:center;gap:8px;}
+.page-logo span{color:#DCDF28;}
+.present-btn{background:#DCDF28;color:#1E2D0A;font-family:'Lato',sans-serif;font-size:11px;font-weight:900;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;}
+.main-wrap{max-width:1200px;margin:0 auto;padding:24px 20px 80px;}
+.stage-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#DCDF28;padding:20px 0 12px;}
+.screens{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:32px;}
+.sg{display:flex;flex-direction:column;align-items:center;}
+.screen-title{font-size:10px;color:#4A5225;margin-top:8px;letter-spacing:.5px;}
+.phone{width:220px;height:440px;background:#F5F0E8;border-radius:36px;box-shadow:0 0 0 6px #3A4820,0 20px 60px rgba(0,0,0,.45);overflow:hidden;position:relative;flex-shrink:0;}
+.sc{display:flex;flex-direction:column;height:100%;position:relative;}
+.sb{height:28px;background:#F5F0E8;padding:0 14px;display:flex;align-items:center;justify-content:flex-end;flex-shrink:0;}
+.time{font-size:10px;font-weight:700;color:#3A4820;}
+.card{background:#E0D8C6;border-radius:12px;padding:11px 13px;margin-bottom:7px;flex-shrink:0;}
+.cl{font-size:9px;font-weight:700;color:#7A7050;text-transform:uppercase;letter-spacing:.9px;margin-bottom:4px;display:block;}
+.cv{font-size:13px;font-weight:700;color:#2A3012;line-height:1.35;}
+.cv-ph{font-size:13px;color:#9A8E78;font-style:italic;}
+.cv-ed{display:flex;align-items:center;justify-content:space-between;}
+.edit-ic{font-size:11px;color:#DCDF28;cursor:pointer;flex-shrink:0;margin-left:4px;}
+.sub{font-size:11px;color:#8A8060;line-height:1.6;margin-bottom:12px;}
+.sc-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 56px;text-align:center;}
+.sc-top{flex:1;overflow-y:auto;padding:16px 16px 72px;display:flex;flex-direction:column;scrollbar-width:none;}
+.sc-top::-webkit-scrollbar{display:none;}
+.sc-foot{position:absolute;bottom:0;left:0;right:0;padding:0 0 28px;text-align:center;}
+.cta-text{font-size:13px;font-weight:700;color:#4A5225;display:inline-flex;align-items:center;gap:5px;}
+.cta-text::after{content:'›';font-size:17px;font-weight:300;color:#DCDF28;position:relative;top:-1px;}
+.cta-muted{font-size:13px;font-weight:700;color:#C0B8A0;display:inline-flex;align-items:center;gap:5px;}
+.cta-muted::after{content:'›';font-size:17px;font-weight:300;color:#D4C8A8;}
+.cta-bar{width:28px;height:2.5px;background:#DCDF28;border-radius:2px;margin:7px auto 0;}
+.nh{position:absolute;top:32px;right:14px;width:26px;height:26px;border-radius:50%;background:rgba(220,223,40,.2);border:1px solid rgba(220,223,40,.38);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;z-index:50;}
+.nh-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#1E2D0A;border-radius:12px;padding:6px;min-width:130px;box-shadow:0 6px 24px rgba(0,0,0,.45);z-index:200;}
+.nh-menu.open{display:block;}
+.nm-item{padding:8px 12px;font-size:11px;font-weight:700;color:#F5F0E8;border-radius:8px;cursor:pointer;white-space:nowrap;}
+.nm-item:hover{background:rgba(220,223,40,.18);color:#DCDF28;}
+.nest-icon-lg{font-size:56px;margin-bottom:16px;line-height:1;}
+.nest-title{font-size:28px;font-weight:900;color:#2A3012;letter-spacing:-.5px;margin-bottom:12px;}
+.nest-sub{font-size:12px;color:#6B6450;line-height:1.6;max-width:170px;margin:0 auto;}
+.sr{display:flex;gap:8px;margin-bottom:10px;}
+.st{flex:1;background:#E0D8C6;border-radius:10px;padding:10px 8px;text-align:center;}
+.sv{font-size:16px;font-weight:900;color:#2A3012;}
+.sl{font-size:9px;color:#8A8060;margin-top:2px;}
+.sp{flex:1;min-height:8px;}
+.doc-row{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid rgba(58,72,32,.08);}
+.doc-row:last-child{border-bottom:none;}
+.doc-name{flex:1;font-size:12px;font-weight:700;color:#2A3012;line-height:1.2;}
+.doc-name small{display:block;font-size:9px;font-weight:400;color:#8A8060;margin-top:2px;}
+.doc-name.done{color:#4A5225;}
+.doc-btn{background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:700;padding:6px 10px;border-radius:8px;cursor:pointer;flex-shrink:0;}
+.doc-done-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.doc-done{font-size:10px;font-weight:700;color:#4A5225;}
+.doc-change{font-size:9px;color:#8A8060;cursor:pointer;text-decoration:underline;}
+.credit-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 0;}
+.credit-q{font-size:10px;font-weight:700;color:#2A3012;flex:1;line-height:1.3;}
+.tog{display:flex;gap:3px;flex-shrink:0;}
+.tog-opt{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;color:#8A8060;background:rgba(58,72,32,.07);}
+.tog-no{background:rgba(58,72,32,.2);color:#3A4820;}
+.demo-overlay{display:none;position:fixed;inset:0;background:#0D1506;z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+body.demo-mode .demo-overlay{display:flex;}
+body.demo-mode .main-wrap,body.demo-mode .page-header{display:none;}
+.demo-top{position:absolute;top:0;left:0;right:0;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.demo-logo{font-size:14px;font-weight:700;color:#F5F0E8;}
+.demo-logo span{color:#DCDF28;}
+.demo-exit{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;padding:6px 13px;border-radius:7px;cursor:pointer;}
+.demo-side{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:18px;cursor:pointer;user-select:none;}
+.demo-side:hover:not(.disabled){background:rgba(220,223,40,.15);border-color:#DCDF28;color:#DCDF28;}
+.demo-side.disabled{opacity:.15;cursor:default;}
+#demoLeft{left:calc(50% - 170px);}
+#demoRight{right:calc(50% - 170px);}
+.demo-phone-wrap{transition:opacity .15s,transform .15s;}
+.demo-phone-wrap .phone{width:270px;height:540px;}
+.demo-bottom{position:absolute;bottom:0;left:0;right:0;padding:0 0 20px;text-align:center;}
+.demo-counter{font-size:11px;color:rgba(255,255,255,.25);letter-spacing:1px;}
+.demo-hint{font-size:9px;color:rgba(255,255,255,.12);margin-top:4px;letter-spacing:.5px;text-transform:uppercase;}
+
+.fl{font-size:11px;font-weight:700;color:#7A7050;margin-bottom:5px;display:block;}
+.fi{background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:#2A3012;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0;}
+.fi.on{border-color:#4A5225;}
+.prog{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(58,72,32,.12);}
+.prog-f{height:3px;background:#DCDF28;border-radius:0 2px 2px 0;}
+
+/* ── Form fields: label above, clean white input box ── */
+.fl{font-size:11px;font-weight:700;color:#7A7050;margin-bottom:5px;display:block;}
+.fi{background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:#2A3012;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0;}
+.fi.on{border-color:#4A5225;}
+/* Progress bar */
+.prog{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(58,72,32,.12);}
+.prog-f{height:3px;background:#DCDF28;border-radius:0 2px 2px 0;}
+
+/* ── Review cards: label inside top of box (matches PRISM review style) ── */
+.rv{background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:9px 12px;margin-bottom:7px;flex-shrink:0;}
+.rvl{font-size:9px;font-weight:700;color:#7A7050;text-transform:uppercase;letter-spacing:.9px;margin-bottom:3px;display:block;}
+.rvv{font-size:13px;font-weight:700;color:#2A3012;}
+.rvv.pos{font-size:13px;font-weight:700;color:#4A5225;}
+
+.btn-solid{background:#3A4820;color:#F5F0E8;border:none;border-radius:14px;padding:14px;width:100%;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-align:center;margin-top:12px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="page-logo">🪺 <span>The Nest</span></div>
+  <button class="present-btn" onclick="enterDemo()">▶ Present</button>
+</div>
+<div class="demo-overlay" id="demoOverlay">
+  <div class="demo-top"><div class="demo-logo">🪺 <span>The Nest</span></div><button class="demo-exit" onclick="exitDemo()">✕ Exit</button></div>
+  <div class="demo-side disabled" id="demoLeft" onclick="demoNav(-1)">‹</div>
+  <div class="demo-phone-wrap" id="demoWrap"></div>
+  <div class="demo-side" id="demoRight" onclick="demoNav(1)">›</div>
+  <div class="demo-bottom"><div class="demo-counter" id="demoCounter">1 / 7</div><div class="demo-hint">Tap action to advance · Arrow keys · Esc to exit</div></div>
+</div>
+<div class="main-wrap">
+  <div class="stage-label">Stage 1 — Onboarding</div>
+  <div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb"><span class="time">9:41</span></div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        
+        <div class="sc-body">
+          <div class="nest-icon-lg">🪺</div>
+          <h2 class="nest-title">The Nest</h2>
+          <p class="nest-sub">Your path to financial freedom through SMSF property investment</p>
+        </div><div class="sc-foot"><div class="cta-text">Let's get started</div><div class="cta-bar"></div></div>
+      </div></div>
+      <div class="screen-title">1. Welcome</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb" style="position:relative">
+          <span class="time">9:41</span>
+          <div class="prog"><div class="prog-f" style="width:28%"></div></div>
+        </div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        <div class="sc-top" style="padding:16px 16px 72px">
+          <h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:6px">Is this you?</h2>
+          <p class="sub">The person who referred you gave us these details. Tap to update anything.</p>
+          <span class="fl">Name</span>
+          <div class="fi on">Sarah Mitchell <span class="edit-ic">✏</span></div>
+          <span class="fl">Email</span>
+          <div class="fi">sarah@email.com <span class="edit-ic">✏</span></div>
+          <span class="fl">Mobile</span>
+          <div class="fi">0412 345 678 <span class="edit-ic">✏</span></div>
+          <div class="sp"></div>
+        </div>
+        <div class="sc-foot"><div class="cta-text">My details are correct</div><div class="cta-bar"></div></div>
+      </div></div>
+      <div class="screen-title">2. Confirm Details</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb"><span class="time">9:41</span></div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        
+        <div class="sc-body" style="padding-bottom:72px">
+          <div style="font-size:38px;margin-bottom:18px">🪺</div>
+          <h2 class="nest-title" style="font-size:21px;margin-bottom:12px">Quick check.</h2>
+          <p class="nest-sub">Everyone's situation is a little different. A few quick questions so we can point you in the right direction.</p>
+        </div><div class="sc-foot"><div class="cta-text">Let's go</div><div class="cta-bar"></div></div>
+      </div></div>
+      <div class="screen-title">3. Qualifier intro</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb" style="position:relative"><span class="time">9:41</span><div class="prog"><div class="prog-f" style="width:57%"></div></div></div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        <div class="sc-top" style="padding:16px 16px 20px">
+          <h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:6px">About you.</h2>
+          <p class="sub">Fill in your details. We'll use these to find the right path for you.</p>
+          <span class="fl">Date of birth</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">DD / MM / YYYY</span></div>
+          <span class="fl">Residential status</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Renting, owning…</span></div>
+          <span class="fl">Current address</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Your home address</span></div>
+          <span class="fl">Time at address</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Years</span></div>
+          <span class="fl">Marital status</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Single, married…</span></div>
+          <span class="fl">Dependents</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">0</span></div>
+          <span class="fl">Employment type</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Full-time, part-time…</span></div>
+          <span class="fl">Employer</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Your employer</span></div>
+          <span class="fl">Base salary</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">$</span></div>
+          <span class="fl">Overtime / Bonus</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">$ if applicable</span></div>
+          <span class="fl">Super balance</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Your current balance</span></div>
+          
+          <span class="fl">Credit history</span>
+          <div class="card">
+            <div class="cl" style="margin-bottom:8px">Select yes if any apply</div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div class="credit-row"><span class="credit-q">Bankruptcy or Part IX</span><div class="tog"><span class="tog-opt tog-no">No</span><span class="tog-opt">Yes</span></div></div>
+              <div class="credit-row"><span class="credit-q">Default on credit file</span><div class="tog"><span class="tog-opt tog-no">No</span><span class="tog-opt">Yes</span></div></div>
+              <div class="credit-row"><span class="credit-q">Court judgements</span><div class="tog"><span class="tog-opt tog-no">No</span><span class="tog-opt">Yes</span></div></div>
+              <div class="credit-row"><span class="credit-q">Behind on repayments</span><div class="tog"><span class="tog-opt tog-no">No</span><span class="tog-opt">Yes</span></div></div>
+              <div class="credit-row"><span class="credit-q">Currently a guarantor</span><div class="tog"><span class="tog-opt tog-no">No</span><span class="tog-opt">Yes</span></div></div>
+            </div>
+          </div>
+          <div style="margin-top:20px;text-align:center;padding-bottom:20px">
+            <div class="cta-text">Continue</div>
+            <div class="cta-bar"></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="screen-title">4. Intake form</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb"><span class="time">9:41</span></div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        
+        <div class="sc-top">
+          <h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:6px">A couple of<br>documents.</h2>
+          <p class="sub">Fully encrypted. Used only to process your application.</p>
+          <div style="margin-top:4px">
+            <div class="doc-row">
+              <div class="doc-name done">Photo ID ✓<small>Licence or passport</small></div>
+              <div class="doc-done-wrap"><span class="doc-done">Done ✓</span><span class="doc-change">Change</span></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-name">Super statement<small>Your most recent</small></div>
+              <div class="doc-btn">↑ Upload</div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-name">Recent payslip<small>Last 3 months</small></div>
+              <div class="doc-btn">↑ Upload</div>
+            </div>
+          </div>
+          <div class="sp"></div>
+        </div><div class="sc-foot"><div class="cta-muted">Continue</div><div class="cta-bar"></div></div>
+      </div></div>
+      <div class="screen-title">5. Upload documents</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb" style="position:relative"><span class="time">9:41</span><div class="prog"><div class="prog-f" style="width:86%"></div></div></div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        <div class="sc-top" style="padding:16px 16px 20px">
+          <h2 style="font-size:24px;font-weight:900;color:#2A3012;line-height:1.15;margin-bottom:8px">Review &<br>confirm.</h2>
+          <p class="sub" style="margin-bottom:14px">Everything look right?</p>
+          <span class="fl">Full name</span>
+          <div class="fi">Sarah Mitchell</div>
+          <span class="fl">Date of birth</span>
+          <div class="fi">15 Mar 1985</div>
+          <span class="fl">Residential address</span>
+          <div class="fi">12 Beach St, Helensvale</div>
+          <span class="fl">Annual income</span>
+          <div class="fi">$95,000 / year</div>
+          <span class="fl">Employer</span>
+          <div class="fi">Acme Corp · Full-time</div>
+          <span class="fl">Super balance</span>
+          <div class="fi">$182,000</div>
+          <span class="fl">Credit history</span>
+          <div class="fi">No issues declared</div>
+          <span class="fl">Documents</span>
+          <div class="fi" style="color:#4A5225;font-weight:700">✅ All 3 uploaded</div>
+          
+          <div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Submit my application</div><div class="cta-bar"></div></div>
+        </div>
+      </div></div>
+      <div class="screen-title">6. Review & confirm</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc">
+        <div class="sb"><span class="time">9:41</span></div>
+        <div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div>
+        
+        <div class="sc-body">
+          <div style="font-size:48px;margin-bottom:18px">🪺</div>
+          <h2 class="nest-title" style="font-size:22px;margin-bottom:12px">Leave it<br>with us.</h2>
+          <p class="nest-sub">We're reviewing everything now. Someone will be in touch within one business day.</p>
+        </div>
+      </div></div>
+      <div class="screen-title">7. Under review</div>
+    </div>
+  </div>
+
+
+<div class="stage-label">Stage 2 — Approval</div>
+<div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:transparent"><span class="time" style="color:rgba(255,255,255,.7)">9:41</span><div class="prog"><div class="prog-f" style="width:15%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-body" style="background:linear-gradient(160deg,#1A210A,#2E3818,#4A5225);padding-bottom:72px"><div style="font-size:50px;margin-bottom:12px">🎉</div><h2 style="font-size:24px;font-weight:900;color:#F5F0E8;line-height:1.15;margin-bottom:8px">You're approved!</h2><div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;text-align:center;max-width:170px">We've reviewed your details and you're a great fit for SMSF property investment through Corbwood.</div></div><div class="sc-foot"><div class="cta-text" style="color:#DCDF28">Let's continue →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">8. BC Approved</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:18%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:21px;font-weight:900;color:#2A3012;margin-bottom:8px">How would you<br>like to proceed?</h2><p style="font-size:11px;color:#8A8060;margin-bottom:18px;line-height:1.6">Choose the right path for your situation.</p><div style="background:#3A4820;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer"><div style="font-size:13px;font-weight:900;color:#F5F0E8;margin-bottom:3px">Set up a new SMSF</div><div style="font-size:10px;color:rgba(255,255,255,.55)">We'll guide you through the full setup with Capri</div></div><div style="background:#F5F0E8;border:1.5px solid #C8C0A8;border-radius:14px;padding:14px 16px;cursor:pointer"><div style="font-size:13px;font-weight:900;color:#2A3012;margin-bottom:3px">I already have an SMSF</div><div style="font-size:10px;color:#8A8060">We'll verify your existing fund and get you invested</div></div><div style="height:16px"></div></div></div></div>
+      <div class="screen-title">9. New or existing SMSF?</div>
+    </div>
+</div>
+
+<div class="stage-label">Stage 3 — SMSF Setup</div>
+<div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:22%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Let's get you booked in.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Three appointments to lock in.</p><span class="fl">SMSF application appointment</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Select a date</span></div>
+          <span class="fl">Finance appointment</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Select a date</span></div>
+          <span class="fl">Financial planner appointment</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Select a date</span></div>
+          <div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Book appointments</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">10. Book appointments</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:26%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Finance documents.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">5 items for Macquarie. Fully encrypted.</p><div style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(58,72,32,.08)"><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#4A5225">Payslip 1 ✓</div><div style="font-size:9px;color:#8A8060">Most recent</div></div><span style="font-size:9px;color:#8A8060;text-decoration:underline;cursor:pointer">Change</span></div><div style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(58,72,32,.08)"><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#4A5225">Payslip 2 ✓</div><div style="font-size:9px;color:#8A8060">Second most recent</div></div><span style="font-size:9px;color:#8A8060;text-decoration:underline;cursor:pointer">Change</span></div><div style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(58,72,32,.08)"><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#4A5225">ID — front ✓</div><div style="font-size:9px;color:#8A8060">Licence or passport</div></div><span style="font-size:9px;color:#8A8060;text-decoration:underline;cursor:pointer">Change</span></div><div style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(58,72,32,.08)"><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#2A3012">ID — back</div><div style="font-size:9px;color:#8A8060">Licence or passport</div></div><div style="background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer;flex-shrink:0">↑ Upload</div></div><div style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(58,72,32,.08)"><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#2A3012">Super statement</div><div style="font-size:9px;color:#8A8060">Most recent statement</div></div><div style="background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer;flex-shrink:0">↑ Upload</div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Continue</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">11. Finance documents</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:30%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Watch these<br>before we continue.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Required for all SMSF investors.</p><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:11px 13px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><div style="width:48px;height:36px;border-radius:8px;background:linear-gradient(135deg,#2E3818,#4A5225);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">▶</div><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#2A3012">SMSF Compliance Overview</div><div style="font-size:9px;color:#8A8060;margin-top:2px">4:32 · Investure</div></div><span style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(74,82,37,.18);color:#4A5225">✓ Watched</span></div></div><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:11px 13px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><div style="width:48px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1A210A,#2E3818);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">▶</div><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#2A3012">Your SMSF Obligations</div><div style="font-size:9px;color:#8A8060;margin-top:2px">3:18 · Capri</div></div><span style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(220,0,0,.08);color:#cc2222">⚠ Required</span></div></div><div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Continue — 1 video remaining</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">12. Compliance videos</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:33%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Sign your<br>Third Party Authority.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">This authorises Capri to manage your SMSF administration on your behalf.</p><div class="card"><div class="cl">Document</div><div class="cv">Third Party Authority (3PA)</div></div>
+          <div class="card"><div class="cl">Authorising</div><div class="cv">Capri Wealth Management</div></div>
+          <div class="card"><div class="cl">What it covers</div><div class="cv">SMSF admin — does not grant investment authority</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Sign document →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">13. Sign 3PA</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:36%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Apply for your<br>Director ID.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Required by law for all SMSF trustees. Takes about 5 minutes via myGovID.</p><div style="display:flex;align-items:flex-start;gap:10px;padding:5px 0"><div style="width:22px;height:22px;border-radius:50%;background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div><div style="font-size:11px;color:#5A5A3A;line-height:1.5">Go to the ATO website (button below)</div></div><div style="display:flex;align-items:flex-start;gap:10px;padding:5px 0"><div style="width:22px;height:22px;border-radius:50%;background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div><div style="font-size:11px;color:#5A5A3A;line-height:1.5">Log in with your myGovID</div></div><div style="display:flex;align-items:flex-start;gap:10px;padding:5px 0"><div style="width:22px;height:22px;border-radius:50%;background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div><div style="font-size:11px;color:#5A5A3A;line-height:1.5">Verify your identity</div></div><div style="display:flex;align-items:flex-start;gap:10px;padding:5px 0"><div style="width:22px;height:22px;border-radius:50%;background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">4</div><div style="font-size:11px;color:#5A5A3A;line-height:1.5">Your Director ID is issued instantly</div></div><div style="display:flex;align-items:flex-start;gap:10px;padding:5px 0"><div style="width:22px;height:22px;border-radius:50%;background:#3A4820;color:#F5F0E8;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">5</div><div style="font-size:11px;color:#5A5A3A;line-height:1.5">Come back and tap 'Done'</div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Go to ATO website →</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">14. Director ID (DIN)</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:39%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">One more<br>to sign.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">This appoints Crescent as your SMSF accountant to apply for your ABN and TFN.</p><div class="card"><div class="cl">Document</div><div class="cv">Letter of Engagement</div></div>
+          <div class="card"><div class="cl">Appointing</div><div class="cv">Crescent Accounting</div></div>
+          <div class="card"><div class="cl">What they do</div><div class="cv">Process your SMSF ABN and TFN — usually 24–48 hours</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Sign LOE →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">15. Sign LOE — Crescent</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:42%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">We're on it.</h2><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">3PA signed</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Director ID confirmed</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">LOE signed with Crescent</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">⏳</span><div><div style="font-size:11px;font-weight:700;color:#2A3012">Capri reviewing documents</div><div style="font-size:9px;color:#8A8060">3–5 business days</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">⏳</span><div><div style="font-size:11px;font-weight:700;color:#2A3012">Crescent: ABN & TFN</div><div style="font-size:9px;color:#8A8060">24–48 hours</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">SMSF established</div></div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Continue</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">16. ABN/TFN being processed</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:transparent"><span class="time" style="color:rgba(255,255,255,.7)">9:41</span><div class="prog"><div class="prog-f" style="width:46%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-body" style="background:linear-gradient(160deg,#1A210A,#2E3818,#4A5225);padding-bottom:72px"><div style="font-size:50px;margin-bottom:12px">🏛</div><h2 style="font-size:24px;font-weight:900;color:#F5F0E8;line-height:1.15;margin-bottom:8px">Your SMSF is established.</h2><div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;text-align:center;max-width:170px">Your fund has been registered. ABN and TFN issued. Time to find your property.</div></div><div class="sc-foot"><div class="cta-text" style="color:#DCDF28">Browse properties →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">17. SMSF established</div>
+    </div>
+</div>
+
+<div class="stage-label">Stage 3 — Existing SMSF (Path 2)</div>
+<div class="screens">
+
+    <div class="sg" data-path="2">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:22%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Connect your<br>existing SMSF.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">We'll verify your fund is set up and ready to invest in property.</p><span class="fl">SMSF fund name</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Your SMSF fund name</span></div>
+          <span class="fl">ABN</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">SMSF ABN</span></div>
+          <span class="fl">Trustee type</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Individual or corporate</span></div>
+          <span class="fl">Fund registration number</span>
+          <div class="fi"><span style="color:#A8A090;font-style:italic">Your SMSF fund number</span></div>
+          <div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Verify my SMSF</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">E1. Connect existing SMSF</div>
+    </div>
+    <div class="sg" data-path="2">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:32%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Watch these<br>before we continue.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Required regardless of your existing SMSF — a quick compliance check.</p><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:11px 13px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><div style="width:48px;height:36px;border-radius:8px;background:linear-gradient(135deg,#2E3818,#4A5225);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">▶</div><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#2A3012">SMSF Compliance Overview</div><div style="font-size:9px;color:#8A8060;margin-top:2px">4:32 · Investure</div></div><span style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(74,82,37,.18);color:#4A5225">✓ Watched</span></div></div><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:11px 13px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><div style="width:48px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1A210A,#2E3818);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">▶</div><div style="flex:1"><div style="font-size:11px;font-weight:700;color:#2A3012">Your SMSF Obligations</div><div style="font-size:9px;color:#8A8060;margin-top:2px">3:18 · Capri</div></div><span style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(220,0,0,.08);color:#cc2222">⚠ Required</span></div></div><div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Continue — 1 video remaining</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">E2. Compliance videos (existing SMSF)</div>
+    </div>
+</div>
+
+<div class="stage-label">Stage 4 — Property Selection</div>
+<div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:50%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Properties<br>matched for you.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Based on your borrowing capacity, we've found these options.</p><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:12px 14px;margin-bottom:9px"><div style="font-size:9px;font-weight:700;color:#7A7050;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Option 1 · QLD</div><div style="font-size:13px;font-weight:900;color:#2A3012;margin-bottom:4px">64/12 Kimberley Close<br>Redbank Plains QLD 4301</div><div style="display:flex;gap:12px"><span style="font-size:11px;font-weight:700;color:#4A5225">$590,000</span><span style="font-size:11px;color:#8A8060">5.2% yield</span></div></div><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:12px 14px;margin-bottom:9px"><div style="font-size:9px;font-weight:700;color:#7A7050;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Option 2 · QLD</div><div style="font-size:13px;font-weight:900;color:#2A3012;margin-bottom:4px">12/44 Riverview Terrace<br>Indooroopilly QLD 4068</div><div style="display:flex;gap:12px"><span style="font-size:11px;font-weight:700;color:#4A5225">$620,000</span><span style="font-size:11px;color:#8A8060">5.0% yield</span></div></div><div style="background:#FFFFFF;border:1.5px solid #C8C0A8;border-radius:12px;padding:12px 14px;margin-bottom:9px"><div style="font-size:9px;font-weight:700;color:#7A7050;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Option 3 · QLD</div><div style="font-size:13px;font-weight:900;color:#2A3012;margin-bottom:4px">3 Palmerston Drive<br>Ormeau QLD 4208</div><div style="display:flex;gap:12px"><span style="font-size:11px;font-weight:700;color:#4A5225">$575,000</span><span style="font-size:11px;color:#8A8060">5.4% yield</span></div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">View details</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">18. Properties for you</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:52%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">64/12 Kimberley Close.</h2><div class="card"><div class="cl">Address</div><div class="cv">64/12 Kimberley Close, Redbank Plains QLD 4301</div></div>
+          <div class="card"><div class="cl">Purchase price</div><div class="cv">$590,000</div></div>
+          <div class="card"><div class="cl">Estimated rent</div><div class="cv">$590 / week · 5.2% yield</div></div>
+          <div class="card"><div class="cl">Property type</div><div class="cv">Townhouse · 3 bed · 2 bath · 1 garage</div></div>
+          <div class="card"><div class="cl">Vacancy rate</div><div class="cv">2.1% — Redbank Plains area</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Select this property →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">19. Property detail</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:53%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:21px;font-weight:900;color:#2A3012;margin-bottom:8px">Your co-invest<br>structure.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Corbwood co-invests alongside your SMSF. Here's how it works for this property.</p><div class="card"><div class="cl">Your SMSF contribution</div><div class="cv">$177,000 (30%)</div></div>
+          <div class="card"><div class="cl">Your SMSF loan (Macquarie)</div><div class="cv">$413,000 (70%)</div></div>
+          <div class="card"><div class="cl">Total property</div><div class="cv">$590,000</div></div>
+          <div class="card"><div class="cl">Weekly cashflow (est.)</div><div class="cv">Net positive after loan repayments</div></div>
+          <div style="height:16px"></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Understood — select this property</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">20. Co-invest structure</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:55%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Property<br>confirmed.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Your property is reserved while we prepare your contracts.</p><div class="card"><div class="cl">Property</div><div class="cv">64/12 Kimberley Close, Redbank Plains QLD 4301</div></div>
+          <div class="card"><div class="cl">Purchase price</div><div class="cv">$590,000</div></div>
+          <div class="card"><div class="cl">Next step</div><div class="cv">Contracts — buyer & seller solicitors to be confirmed</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Continue →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">21. Property confirmed</div>
+    </div>
+</div>
+
+<div class="stage-label">Stage 5 — Contracts</div>
+<div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:60%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">Solicitors<br>appointed.</h2><div class="card"><div class="cl">Your solicitor (buyer)</div><div class="cv">Chris Finlay — AS Law</div></div>
+          <div class="card"><div class="cl">Seller's solicitor</div><div class="cv">Tamie Bonner — MCG Legal</div></div>
+          <div class="card"><div class="cl">Contracts</div><div class="cv">Being prepared — expect 1–3 days</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Got it →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">22. Solicitors appointed</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:63%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">Your contracts.</h2><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Sale documents received</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Solicitors appointed</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Draft contracts received</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">⏳</span><div><div style="font-size:11px;font-weight:700;color:#2A3012">Contracts sent for signing</div><div style="font-size:9px;color:#8A8060">With your solicitor</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">Contracts returned</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">Contracts executed</div></div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Continue</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">23. Contract status</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:transparent"><span class="time" style="color:rgba(255,255,255,.7)">9:41</span><div class="prog"><div class="prog-f" style="width:66%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-body" style="background:linear-gradient(160deg,#1A210A,#2E3818,#4A5225);padding-bottom:72px"><div style="font-size:50px;margin-bottom:12px">📄</div><h2 style="font-size:24px;font-weight:900;color:#F5F0E8;line-height:1.15;margin-bottom:8px">Contracts<br>executed.</h2><div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;text-align:center;max-width:170px">Signed and exchanged. Settlement is confirmed and both solicitors have copies.</div></div><div class="sc-foot"><div class="cta-text" style="color:#DCDF28">What's next →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">24. Contracts executed</div>
+    </div>
+</div>
+
+<div class="stage-label">Stage 6 — Valuation & Finance</div>
+<div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:70%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">In progress.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">Valuation and landlord insurance running simultaneously.</p><div class="card"><div class="cl">Valuation</div><div class="cv">Arranged — 3–5 business days</div></div>
+          <div class="card"><div class="cl">Insurance</div><div class="cv">In progress — tracker below</div></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Consent to Share sent</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Consent to Share received</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">⏳</span><div><div style="font-size:11px;font-weight:700;color:#2A3012">Quote requested</div><div style="font-size:9px;color:#8A8060">Insurer is working on it</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">Proposal sent to you</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">You approve the proposal</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">Insurance completed</div></div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Continue</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">25. Valuation & insurance</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:72%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">One thing<br>from you.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">We need your Consent to Share so we can get a landlord insurance quote from our insurance partner.</p><div class="card"><div class="cl">What you're authorising</div><div class="cv">Corbwood to share your SMSF details with our insurance partner</div></div>
+          <div class="card"><div class="cl">What happens next</div><div class="cv">We request and present you with the best landlord insurance option</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Sign Consent to Share →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">26. Consent to Share</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:76%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:8px">Finance<br>submitted.</h2><p style="font-size:11px;color:#8A8060;margin-bottom:14px;line-height:1.6">All 5 documents are with Macquarie.</p><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">All 5 finance documents received</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">⏳</span><div><div style="font-size:11px;font-weight:700;color:#2A3012">Macquarie assessing</div><div style="font-size:9px;color:#8A8060">10–15 business days</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">Loan approved</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">Loan documents to sign</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">🔒</span><div><div style="font-size:11px;font-weight:700;color:#C0B8A0">LOO received</div></div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">Continue</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">27. Finance submitted</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:transparent"><span class="time" style="color:rgba(255,255,255,.7)">9:41</span><div class="prog"><div class="prog-f" style="width:80%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-body" style="background:linear-gradient(160deg,#1A210A,#2E3818,#4A5225);padding-bottom:72px"><div style="font-size:50px;margin-bottom:12px">🎉</div><h2 style="font-size:24px;font-weight:900;color:#F5F0E8;line-height:1.15;margin-bottom:8px">Loan approved!</h2><div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;text-align:center;max-width:170px">Macquarie has approved your SMSF property loan. One more step — sign your loan documents.</div></div><div class="sc-foot"><div class="cta-text" style="color:#DCDF28">Sign loan documents →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">28. Loan approved</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:82%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">Sign your<br>loan documents.</h2><div class="card"><div class="cl">Lender</div><div class="cv">Macquarie Bank</div></div>
+          <div class="card"><div class="cl">Loan amount</div><div class="cv">$413,000</div></div>
+          <div class="card"><div class="cl">Interest rate</div><div class="cv">7.19% p.a.</div></div>
+          <div class="card"><div class="cl">Term</div><div class="cv">30 years</div></div>
+          <div class="card"><div class="cl">Status</div><div class="cv">Documents sent — sign within 7 days</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Review and sign →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">29. Sign loan documents</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:86%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 72px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">Letter of Offer<br>received. ✓</h2><div class="card"><div class="cl">Lender</div><div class="cv">Macquarie Bank</div></div>
+          <div class="card"><div class="cl">Loan amount</div><div class="cv">$518,000</div></div>
+          <div class="card"><div class="cl">Interest rate</div><div class="cv">7.19% p.a.</div></div>
+          <div class="card"><div class="cl">Settlement date</div><div class="cv">Est. 12 October 2026</div></div>
+          <div class="sp"></div></div><div class="sc-foot"><div class="cta-text">Review and accept →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">30. LOO received</div>
+    </div>
+</div>
+
+<div class="stage-label">Stage 7 — Settlement</div>
+<div class="screens">
+
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:#F5F0E8"><span class="time" style="color:#3A4820">9:41</span><div class="prog"><div class="prog-f" style="width:93%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-top" style="padding:16px 16px 20px"><h2 style="font-size:22px;font-weight:900;color:#2A3012;margin-bottom:14px">Almost there.</h2><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Finance approved</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Loan documents signed</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Insurance completed</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">LOO accepted — $518k @ 7.19%</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">✅</span><div><div style="font-size:11px;font-weight:700;color:#4A5225">Settlement date confirmed — 12 Oct 2026</div></div></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(58,72,32,.08)"><span style="font-size:14px">⏳</span><div><div style="font-size:11px;font-weight:700;color:#2A3012">Settlement</div><div style="font-size:9px;color:#8A8060">In 2 days</div></div></div><div style="margin-top:16px;text-align:center;padding-bottom:20px"><div class="cta-text">View details</div><div class="cta-bar"></div></div></div></div></div>
+      <div class="screen-title">31. Pending settlement</div>
+    </div>
+    <div class="sg" data-path="1">
+      <div class="phone"><div class="sc"><div class="sb" style="position:relative;background:transparent"><span class="time" style="color:rgba(255,255,255,.7)">9:41</span><div class="prog"><div class="prog-f" style="width:100%"></div></div></div><div class="nh" onclick="toggleNH(this)">🪺<div class="nh-menu"><div class="nm-item">📞 Call us</div><div class="nm-item">📅 Book a time</div><div class="nm-item">❓ FAQ</div><div class="nm-item">💬 Live chat</div></div></div><div class="sc-body" style="background:linear-gradient(160deg,#1A210A,#2E3818,#4A5225);padding-bottom:72px"><div style="font-size:50px;margin-bottom:12px">🏡</div><h2 style="font-size:24px;font-weight:900;color:#F5F0E8;line-height:1.15;margin-bottom:8px">Settlement<br>complete!</h2><div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;text-align:center;max-width:170px">Your SMSF now owns 64/12 Kimberley Close, Redbank Plains QLD 4301. Congratulations.</div></div><div class="sc-foot"><div class="cta-text" style="color:#DCDF28">What's next →</div><div class="cta-bar"></div></div></div></div>
+      <div class="screen-title">32. Settlement</div>
+    </div>
+</div>
+
+</div>
+<script>
+function toggleNH(el){
+  const m=el.querySelector('.nh-menu');
+  if(!m)return;
+  const was=m.classList.contains('open');
+  document.querySelectorAll('.nh-menu.open').forEach(x=>x.classList.remove('open'));
+  if(!was){m.classList.add('open');setTimeout(()=>document.addEventListener('click',function c(e){if(!el.contains(e.target))m.classList.remove('open');document.removeEventListener('click',c);},{once:true}),10);}
+}
+let demoMode=false,demoScreens=[],demoIdx=0;
+function getScreens(){return Array.from(document.querySelectorAll('.sg'));}
+function enterDemo(){demoMode=true;document.body.classList.add('demo-mode');demoScreens=getScreens();demoIdx=0;renderDemo();}
+function exitDemo(){demoMode=false;document.body.classList.remove('demo-mode');}
+function demoNav(d){const n=demoIdx+d;if(n<0||n>=demoScreens.length)return;demoIdx=n;renderDemo();}
+function renderDemo(){
+  const s=demoScreens[demoIdx];if(!s)return;
+  const ph=s.querySelector('.phone');const wrap=document.getElementById('demoWrap');
+  wrap.style.opacity='0';wrap.style.transform='translateY(6px)';
+  setTimeout(()=>{
+    wrap.innerHTML='';
+    if(ph){
+      const cl=ph.cloneNode(true);
+      cl.querySelectorAll('.nh-menu.open').forEach(m=>m.classList.remove('open'));
+      cl.querySelectorAll('.nh').forEach(el=>{el.onclick=e=>{e.stopPropagation();toggleNH(el);};});
+      const ft=cl.querySelector('.sc-foot');if(ft){ft.style.cursor='pointer';ft.onclick=()=>demoNav(1);}
+      wrap.appendChild(cl);
+    }
+    document.getElementById('demoCounter').textContent=(demoIdx+1)+' / '+demoScreens.length;
+    document.getElementById('demoLeft').classList.toggle('disabled',demoIdx===0);
+    document.getElementById('demoRight').classList.toggle('disabled',demoIdx===demoScreens.length-1);
+    wrap.style.transition='opacity .15s,transform .15s';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{wrap.style.opacity='1';wrap.style.transform='translateY(0)';}));
+  },80);
+}
+document.addEventListener('keydown',e=>{if(!demoMode)return;if(e.key==='ArrowRight'||e.key==='ArrowDown')demoNav(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')demoNav(-1);if(e.key==='Escape')exitDemo();});
+</script>
+</body>
+</html>
